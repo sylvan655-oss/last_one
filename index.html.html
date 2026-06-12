@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Tubura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --f1:#1C3D2A;--f2:#2A5C3F;--f3:#3D7A55;--f4:#5B9E72;--f5:#A8D5B5;
+  --ear:#6B3A2A;--ear2:#9B5B42;--ear3:#C4845F;
+  --gld:#2E7D52;--gld2:#4CAF78;--gld3:#A8DDB5;--gldp:#E4F5EA;
+  --cr:#F3FAF5;--cr2:#E8F5ED;--cr3:#D4EDDA;
+  --ink:#0F1A12;--ink2:#1E3028;--ink3:#3D6B50;--ink4:#6B9E80;--ink5:#A8D0B8;--ink6:#D4EDE0;
+  --wh:#FFFFFF;--red:#B02020;--redl:#FCEAEA;
+  --fh:'Fraunces',serif;--fb:'Outfit',sans-serif;
+  --r:18px;--rs:12px;--rl:26px;--rxl:36px;
+  --sh:0 4px 24px rgba(12,30,18,.09);--shl:0 12px 48px rgba(12,30,18,.14);--shxl:0 24px 80px rgba(12,30,18,.20);
+}
+html,body,#root{height:100%;overflow:auto;background:var(--cr);font-family:var(--fb);color:var(--ink)}
+button{cursor:pointer;font-family:var(--fb);border:none;outline:none;background:none}
+input,select,textarea{font-family:var(--fb);outline:none}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.78);opacity:0}65%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.fu{animation:fadeUp .48s cubic-bezier(.22,1,.36,1) both}
+.fi{animation:fadeIn .32s ease both}
+.flt{animation:float 4.2s ease-in-out infinite}
+.shell{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:var(--cr);box-shadow:var(--shxl)}
+.shell>*:not(.bnav):not(.toast){flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:88px;scroll-behavior:smooth;min-height:0}
+.bnav{position:absolute;bottom:0;left:0;right:0;height:80px;background:var(--f1);display:flex;z-index:100;padding:0 8px 12px}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px 0;cursor:pointer;border:none;background:none;position:relative;transition:all .25s}
+.ni span{font-size:9px;font-weight:700;color:rgba(255,255,255,.32);transition:color .25s;letter-spacing:.06em;text-transform:uppercase}
+.ni.on span{color:var(--gld2)}
+.ni-pip{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:0;height:3px;background:var(--gld2);border-radius:2px;transition:width .3s cubic-bezier(.34,1.56,.64,1)}
+.ni.on .ni-pip{width:28px}
+.cbadge{position:absolute;top:7px;right:8px;background:var(--ear2);color:white;border-radius:20px;min-width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--f1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 28px;border-radius:100px;font-size:15px;font-weight:600;transition:all .18s;cursor:pointer;letter-spacing:-.01em}
+.bp{background:var(--f1);color:var(--wh)}.bp:active{transform:scale(.97);background:var(--f2)}
+.bg2{background:var(--gld);color:var(--f1);font-weight:700}.bg2:active{background:var(--gld2);transform:scale(.97)}
+.bs{background:transparent;border:2px solid var(--f3);color:var(--f1)}.bs:active{background:var(--f5)}
+.bn{background:var(--cr3);color:var(--ink2)}.bn:active{background:var(--cr2)}
+.bd{background:var(--redl);color:var(--red)}
+.bw{width:100%}
+.ig{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.ig label{font-size:10px;font-weight:700;color:var(--ear2);text-transform:uppercase;letter-spacing:.1em}
+.ig input,.ig select{padding:14px 18px;border:2px solid var(--cr3);border-radius:var(--rs);font-size:15px;background:var(--cr);color:var(--ink);transition:all .18s;width:100%}
+.ig input:focus,.ig select:focus{border-color:var(--f3);background:var(--wh);box-shadow:0 0 0 4px rgba(61,122,85,.1)}
+.ig select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B3A2A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:var(--cr)}
+.badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.bgg{background:#D4EDDA;color:#1C5C30}.bga{background:var(--gldp);color:var(--ear)}.bgr{background:var(--redl);color:var(--red)}.bgn{background:var(--cr3);color:var(--ink3)}
+.ph{padding:52px 22px 14px;background:var(--cr);position:sticky;top:0;z-index:50;border-bottom:1px solid var(--cr3)}
+.ph h1{font-family:var(--fh);font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+.ph p{font-size:13px;color:var(--ink3);margin-top:3px}
+.pc{background:var(--wh);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:transform .2s}
+.pc:active{transform:scale(.96)}
+.pcimg{position:relative;width:100%;height:140px;overflow:hidden;}
+.cb-s{background:linear-gradient(135deg,#E8F5EB,#C8E8D0)}.cb-i{background:linear-gradient(135deg,#EBF0FA,#C8D8F0)}.cb-t{background:linear-gradient(135deg,#F0F5E8,#D4E8C0)}.cb-c{background:linear-gradient(135deg,#E4F5EA,#A8DDB5)}.cb-e{background:linear-gradient(135deg,#F5EDE8,#E0C8B8)}.cb-o{background:linear-gradient(135deg,#EBF5F0,#C8E8D8)}
+.mbd{position:absolute;inset:0;background:rgba(12,30,18,.58);z-index:200;display:flex;align-items:flex-end;animation:fadeIn .2s ease;backdrop-filter:blur(4px)}
+.msh{background:var(--cr);border-radius:var(--rxl) var(--rxl) 0 0;padding:0 24px 40px;max-height:93vh;overflow-y:auto;animation:slideUp .32s cubic-bezier(.22,1,.36,1);width:100%}
+.mhd{width:44px;height:4px;background:var(--cr3);border-radius:4px;margin:14px auto 20px}
+.strack{display:flex;align-items:flex-start;margin:20px 0}
+.snode{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+.scirc{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid var(--cr3);color:var(--ink5);background:var(--wh);transition:all .35s}
+.scirc.done{background:var(--f1);border-color:var(--f1);color:white}
+.scirc.act{background:var(--gldp);border-color:var(--gld);color:var(--gld);animation:pulse 1.8s infinite}
+.sline{flex:1;height:2px;background:var(--cr3);margin-top:17px;transition:background .4s}
+.sline.done{background:var(--f1)}
+.slabel{font-size:9px;color:var(--ink4);text-align:center;max-width:56px;line-height:1.3;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.slabel.done{color:var(--f1)}.slabel.act{color:var(--gld)}
+.chip{display:inline-flex;align-items:center;padding:9px 18px;border-radius:100px;font-size:12px;font-weight:600;background:var(--wh);border:2px solid var(--cr3);cursor:pointer;transition:all .18s;white-space:nowrap;color:var(--ink3)}
+.chip.on{background:var(--f1);color:white;border-color:var(--f1);box-shadow:0 4px 14px rgba(28,61,42,.28)}
+.chip:active:not(.on){background:var(--cr2)}
+.qc{display:flex;align-items:center;border:2px solid var(--cr3);border-radius:100px;overflow:hidden;background:var(--cr)}
+.qb{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--f1);font-size:20px;font-weight:500;cursor:pointer;border:none;transition:background .15s}
+.qb:active{background:var(--f5)}
+.qv{min-width:40px;text-align:center;font-size:17px;font-weight:700;color:var(--ink)}
+.toast{position:absolute;top:56px;left:50%;transform:translateX(-50%);background:var(--f1);color:white;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:1000;animation:pop .3s ease;box-shadow:var(--shl);white-space:nowrap;pointer-events:none}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.skel{background:linear-gradient(90deg,var(--cr2) 25%,var(--cr3) 50%,var(--cr2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--r)}
+.dots{display:flex;gap:6px;justify-content:center;margin:8px 0 20px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--cr3);transition:all .3s}
+.dot.on{width:22px;border-radius:3px;background:var(--f1)}
+.dv{height:1px;background:var(--cr3);margin:18px 0}
+.mapbox{border-radius:var(--r);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.mapgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(28,61,42,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(28,61,42,.07) 1px,transparent 1px);background-size:24px 24px}
+.dopt{border:2px solid var(--cr3);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;cursor:pointer;background:var(--wh);transition:all .2s}
+.dopt.on{border-color:var(--f3);background:#EBF4EE}
+.sw{position:relative}
+.sw input{width:100%;padding:13px 18px 13px 46px;border:2px solid var(--cr3);border-radius:100px;font-size:14px;background:var(--wh);transition:all .18s;color:var(--ink)}
+.sw input:focus{border-color:var(--f3);box-shadow:0 0 0 4px rgba(61,122,85,.1)}
+.sico{position:absolute;left:16px;top:50%;transform:translateY(-50%);pointer-events:none}
+.st{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:14px;line-height:1.15}
+.card{background:var(--wh);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.ret-card{background:var(--wh);border-radius:var(--r);padding:16px;box-shadow:var(--sh);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.ret-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--f3)}
+.ret-card:active{transform:scale(.98)}
+.tr-card{background:var(--wh);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer;transition:all .2s;display:flex;gap:14px;align-items:flex-start;position:relative;overflow:hidden}
+.tr-card:active{transform:scale(.98)}
+.tr-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--f3),var(--f4))}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const {useState,useEffect,useContext,createContext,useRef,useCallback,useMemo} = React;
+
+// ── API CONFIG ─────────────────────────────────────────────────────────────────
+// Change BASE_URL to connect to real backend, e.g. 'https://api.tubura.rw'
+const catBg = c => c==='Seeds'||c==='Imbuto'||c==='Semences'?'cb-s':c==='Inputs'||c==='Intete'||c==='Intrants'?'cb-i':c==='Trees'||c==='Ibiti'||c==='Arbres'?'cb-t':c==='Cash Crops'||c==='CashCrops'||c==='Imyaka Iterwa'||c==='Cultures de rente'?'cb-c':c==='Equipment'||c==='Imikoreshereze'||c==='Équipement'?'cb-e':'cb-o';
+const BASE = '';
+const api = {
+  get: async (path) => {
+    const r = await fetch(BASE + path);
+    if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error((e&&e.detail)||r.statusText); }
+    return r.json();
+  },
+  post: async (path, body) => {
+    const r = await fetch(BASE + path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error((e&&e.detail)||r.statusText); }
+    return r.json();
+  }
+};
+
+// ── FALLBACK DATA (language-neutral: prices, stock, ids, emojis only) ──────────
+const PRODUCT_BASE = [
+  {id:1,catKey:'Seeds',    img:'maize-seeds.jpg',         price:4500, stock:200,rating:4.8,sold:1500},
+  {id:2,catKey:'CashCrops',img:'coffee-seedlings.jpg',    price:200,  stock:500,rating:4.9,sold:3400},
+  {id:3,catKey:'Inputs',   img:'dap-fertilizer.jpg',      price:22000,stock:85, rating:4.7,sold:780},
+  {id:4,catKey:'Inputs',   img:'can-fertilizer.jpg',      price:18000,stock:72, rating:4.6,sold:640},
+  {id:5,catKey:'Seeds',    img:'bean-seeds-rwr2245.jpg',  price:2800, stock:160,rating:4.7,sold:920},
+  {id:6,catKey:'Trees',    img:'grevillea-seedlings.jpg', price:300,  stock:400,rating:4.8,sold:1100},
+  {id:7,catKey:'Trees',    img:'avocado-seedling.jpg',    price:800,  stock:240,rating:4.8,sold:1200},
+  {id:8,catKey:'Equipment',img:'pics-storage-bags.jpg',   price:3500, stock:150,rating:4.7,sold:890},
+  {id:9,catKey:'Inputs',   img:'pesticide-karate.jpg',    price:3500, stock:90, rating:4.4,sold:310},
+  {id:10,catKey:'Equipment',img:'knapsack-sprayer.jpg',   price:15000,stock:30, rating:4.5,sold:180},
+  {id:11,catKey:'Seeds',   img:'irish-potato-seed.jpg',   price:6500, stock:120,rating:4.6,sold:450},
+  {id:12,catKey:'Inputs',  img:'avocado-npk-pack.jpg',    price:8500, stock:65, rating:4.8,sold:240},
+];
+
+// ── PRODUCT IMAGE HELPER ──────────────────────────────────────────────────
+function ProductImg({src, size='56px', borderRadius='14px', fill=false, style={}}) {
+  if (fill) {
+    return (
+      <img
+        src={src}
+        alt=""
+        style={{
+          position:'absolute',
+          inset:0,
+          width:'100%',
+          height:'100%',
+          objectFit:'cover',
+          objectPosition:'center',
+          display:'block',
+          ...style
+        }}
+      />
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt=""
+      style={{
+        width: size,
+        height: size,
+        objectFit: 'cover',
+        borderRadius,
+        flexShrink: 0,
+        display: 'block',
+        ...style
+      }}
+    />
+  );
+}
+
+const TRAINING_BASE = [
+  {id:1,emoji:'☕',available:true},
+  {id:2,emoji:'🌳',available:true},
+  {id:3,emoji:'🐛',available:true},
+  {id:4,emoji:'🌍',available:false},
+  {id:5,emoji:'📦',available:true},
+  {id:6,emoji:'🌱',available:true},
+];
+const FB_RETAILERS = [
+  {id:1,name:'Mugisha Agri Shop',dist:'1.2 km',time:'4 min',stock:'High',phone:'+250788001001'},
+  {id:2,name:'Uwimana Farm Store',dist:'2.7 km',time:'9 min',stock:'Medium',phone:'+250788002002'},
+  {id:3,name:'Kigali Seeds Center',dist:'4.1 km',time:'14 min',stock:'High',phone:'+250788003003'},
+  {id:4,name:'Nyabihu Agrovet',dist:'6.8 km',time:'22 min',stock:'Low',phone:'+250788004004'},
+];
+
+// ── TRANSLATED PRODUCT / TRAINING CONTENT ─────────────────────────────────
+const PRODUCT_STRINGS = {
+  en: [
+    {name:'Maize Seeds (H614D)',    category:'Seeds',      unit:'per 2kg pack',   description:'High-yield hybrid. Drought tolerant. 110-day maturity. OAF-certified for Rwanda highlands.'},
+    {name:'Coffee Seedlings',       category:'Cash Crops', unit:'per seedling',   description:'Bourbon variety, ideal for Rwanda highlands. OAF-certified. Fruiting in 2–3 years.'},
+    {name:'DAP Fertilizer',         category:'Inputs',     unit:'per 50kg bag',   description:'Diammonium phosphate. Ideal for basal application. Season A planting input.'},
+    {name:'CAN Fertilizer',         category:'Inputs',     unit:'per 50kg bag',   description:'Calcium Ammonium Nitrate 26%. Top-dressing for maize and beans.'},
+    {name:'Bean Seeds (RWR 2245)',  category:'Seeds',      unit:'per 1kg pack',   description:'Climbing bean. High yield, excellent market price. Rwanda-approved variety.'},
+    {name:'Grevillea Seedlings',    category:'Trees',      unit:'per seedling',   description:'Agroforestry tree. Adds nitrogen to soil. OAF-recommended for soil health.'},
+    {name:'Avocado Seedling',       category:'Trees',      unit:'per seedling',   description:'Hass variety, grafted. Disease resistant. Income in 3–4 years.'},
+    {name:'PICS Storage Bags',      category:'Equipment',  unit:'per pack (3 bags)', description:'Hermetic storage. Protects grain from weevils for 6+ months post-harvest.'},
+    {name:'Pesticide (Karate)',     category:'Inputs',     unit:'per 100ml',      description:'Lambda-cyhalothrin 5%. For aphids, caterpillars, army worm.'},
+    {name:'Knapsack Sprayer',       category:'Equipment',  unit:'per unit',       description:'16L capacity, ergonomic. Includes all fittings and nozzles.'},
+    {name:'Irish Potato Seed',      category:'Seeds',      unit:'per 10kg pack',  description:'Certified seed potato. High yield suited for Rwanda climate.'},
+    {name:'Avocado Fertilizer',     category:'Inputs',     unit:'per pack',       description:'Specially formulated NPK for avocado and fruit trees.'},
+  ],
+  rw: [
+    {name:'Mbuto za Kalamusi (H614D)', category:'Imbuto',       unit:'ku gasaho ka 2kg',  description:'Umeze w\'imbaraga. Birinda inzara. Iminsi 110. Byemejwe na OAF ku misozi y\'u Rwanda.'},
+    {name:'Inzuki z\'Ikawa',           category:'Imyaka Iterwa', unit:'ku nzuki',          description:'Ubwoko bwa Bourbon, bwiza ku misozi y\'u Rwanda. Byemejwe na OAF. Ibikorwa mu myaka 2–3.'},
+    {name:'Ifumbire DAP',              category:'Intete',        unit:'ku gasaho ka 50kg', description:'Diammonium phosphate. Irimo muri basal. Ifumbire yo gutera Sezonyi A.'},
+    {name:'Ifumbire CAN',              category:'Intete',        unit:'ku gasaho ka 50kg', description:'Calcium Ammonium Nitrate 26%. Ikoreshwa ku buso bw\'ibigori n\'ibishyimbo.'},
+    {name:'Imbuto z\'Ibishyimbo (RWR 2245)', category:'Imbuto',  unit:'ku gasaho ka 1kg',  description:'Ibishyimbo biirukanwa. Umusaruro mwinshi, igiciro cyiza. Byemejwe mu Rwanda.'},
+    {name:'Inzuki za Grevillea',        category:'Ibiti',        unit:'ku nzuki',          description:'Igiti cy\'ubuhinzi buhuriweho. Kongereza azote mu butaka. Igisubizo gisa na OAF.'},
+    {name:'Inzuki z\'Avoka',            category:'Ibiti',        unit:'ku nzuki',          description:'Ubwoko bwa Hass, yatanywe. Irwanya indwara. Amafaranga mu myaka 3–4.'},
+    {name:'Amasaho ya PICS',            category:'Imikoreshereze',unit:'ku gasaho (amasaho 3)', description:'Kubika neza. Birinda inzoga mu birungo igihe cy\'amezi 6+.'},
+    {name:'Umuti wa Karate',            category:'Intete',        unit:'ku 100ml',         description:'Lambda-cyhalothrin 5%. Kurwanya inzuki, imifu, umurarambwa.'},
+    {name:'Pompe yo Gusenya Imiti',     category:'Imikoreshereze',unit:'ku kimwe',         description:'Ubunini bwa 16L, yoroshe. Irimo ibikoresho byose.'},
+    {name:'Imbuto z\'Ibirayi',          category:'Imbuto',        unit:'ku gasaho ka 10kg', description:'Imbuto z\'ibirayi zemewe. Umusaruro mwinshi, buhuje ikirere cy\'u Rwanda.'},
+    {name:'Ifumbire y\'Avoka',          category:'Intete',        unit:'ku gasaho',        description:'NPK yateguwe ku buryo bwihariye ku voka no ku biti bibyara imbuto.'},
+  ],
+  fr: [
+    {name:'Semences Maïs (H614D)',   category:'Semences',   unit:'par sac 2kg',    description:'Hybride à haut rendement. Tolérant à la sécheresse. 110 jours. Certifié OAF pour les hautes terres rwandaises.'},
+    {name:'Plants Café',             category:'Cultures de rente', unit:'par plant', description:'Variété Bourbon, idéale pour les hautes terres. Certifié OAF. Fructification en 2–3 ans.'},
+    {name:'Engrais DAP',             category:'Intrants',   unit:'par sac 50kg',   description:'Diammonium phosphate. Idéal en application de base. Intrant de plantation Saison A.'},
+    {name:'Engrais CAN',             category:'Intrants',   unit:'par sac 50kg',   description:'Nitrate de calcium et d\'ammonium 26%. Amendement pour maïs et haricots.'},
+    {name:'Semences Haricot (RWR 2245)', category:'Semences', unit:'par sac 1kg',  description:'Haricot grimpant. Haut rendement, excellent prix de marché. Variété approuvée au Rwanda.'},
+    {name:'Plants Grevillea',        category:'Arbres',     unit:'par plant',      description:'Arbre agroforestier. Fixe l\'azote dans le sol. Recommandé OAF pour la santé des sols.'},
+    {name:'Plant Avocat',            category:'Arbres',     unit:'par plant',      description:'Variété Hass, greffé. Résistant aux maladies. Revenus en 3–4 ans.'},
+    {name:'Sacs de Stockage PICS',   category:'Équipement', unit:'par lot (3 sacs)', description:'Stockage hermétique. Protège les grains des charançons pendant 6+ mois.'},
+    {name:'Pesticide (Karate)',      category:'Intrants',   unit:'par 100ml',      description:'Lambda-cyhalothrine 5%. Pour pucerons, chenilles, légionnaire d\'automne.'},
+    {name:'Pulvérisateur à Dos',     category:'Équipement', unit:'par unité',      description:'Capacité 16L, ergonomique. Fourni avec tous les accessoires et buses.'},
+    {name:'Semences Pomme de Terre', category:'Semences',   unit:'par sac 10kg',   description:'Plants certifiés. Haut rendement adapté au climat rwandais.'},
+    {name:'Engrais Avocat',          category:'Intrants',   unit:'par lot',        description:'NPK spécialement formulé pour avocatiers et arbres fruitiers.'},
+  ],
+};
+
+const TRAINING_STRINGS = {
+  en: [
+    {title:'Coffee Cultivation',    duration:'3 hours', desc:'Planting, pruning, and harvesting coffee. OAF best practices.'},
+    {title:'Tree Management',       duration:'2 hours', desc:'Grevillea agroforestry, avocado pruning and grafting basics.'},
+    {title:'Pest Management',       duration:'2 hours', desc:'Identify and treat common crop pests. Karate application demo.'},
+    {title:'Soil Health',           duration:'4 hours', desc:'Micro-dosing fertilizer, composting, integrated soil fertility management.'},
+    {title:'Post-Harvest Storage',  duration:'2 hours', desc:'Reduce losses. PICS bag technique, drying, Actellic application.'},
+    {title:'Seed Spacing',          duration:'3 hours', desc:'OAF row-planting technique. Spacing sticks and fertilizer micro-dosing.'},
+  ],
+  rw: [
+    {title:'Guhinga Ikawa',          duration:'Amasaha 3', desc:'Gutera, gukeba no kwimbura ikawa. Uburyo bwiza bwa OAF.'},
+    {title:'Kubungabunga Ibiti',     duration:'Amasaha 2', desc:'Grevillea mu buhinzi, gukeba no gutanya avoka.'},
+    {title:'Kurwanya Ibyonnyi',      duration:'Amasaha 2', desc:'Kumenya no kuvura ibyonnyi bikunze kugaragara. Igikorwa cya Karate.'},
+    {title:'Ubuzima bw\'Ubutaka',    duration:'Amasaha 4', desc:'Ifumbire nto nto, compost, gucunga ubutaka neza.'},
+    {title:'Kubika Imyaka Neza',     duration:'Amasaha 2', desc:'Kugabanya uburara. Uburyo bwa PICS, kwumvisha, Actellic.'},
+    {title:'Gushyira Imbuto ku Murongo', duration:'Amasaha 3', desc:'Uburyo bwa OAF bwo gutera mu mirongo. Inkoni zo kubara n\'ifumbire nto nto.'},
+  ],
+  fr: [
+    {title:'Culture du Café',        duration:'3 heures', desc:'Plantation, taille et récolte du café. Bonnes pratiques OAF.'},
+    {title:'Gestion des Arbres',     duration:'2 heures', desc:'Agroforesterie Grevillea, taille et greffage d\'avocatiers.'},
+    {title:'Gestion des Nuisibles',  duration:'2 heures', desc:'Identifier et traiter les ravageurs courants. Démonstration d\'application Karate.'},
+    {title:'Santé du Sol',           duration:'4 heures', desc:'Micro-dosage d\'engrais, compostage, gestion intégrée de la fertilité des sols.'},
+    {title:'Stockage Post-Récolte',  duration:'2 heures', desc:'Réduire les pertes. Technique sac PICS, séchage, application Actellic.'},
+    {title:'Espacement des Semences',duration:'3 heures', desc:'Technique de plantation en lignes OAF. Bâtons d\'espacement et micro-dosage d\'engrais.'},
+  ],
+};
+
+// Category filter labels per language
+const CAT_LABELS = {
+  en: {all:'All', Seeds:'Seeds', Inputs:'Inputs', Trees:'Trees', CashCrops:'Cash Crops', Equipment:'Equipment'},
+  rw: {all:'Byose', Seeds:'Imbuto', Inputs:'Intete', Trees:'Ibiti', CashCrops:'Imyaka Iterwa', Equipment:'Imikoreshereze'},
+  fr: {all:'Tout',  Seeds:'Semences', Inputs:'Intrants', Trees:'Arbres', CashCrops:'Cultures de rente', Equipment:'Équipement'},
+};
+
+// Build translated product/training arrays from base + strings
+const buildProducts = (lang) => {
+  const strings = PRODUCT_STRINGS[lang] || PRODUCT_STRINGS.en;
+  return PRODUCT_BASE.map((b, i) => Object.assign({}, b, strings[i]));
+};
+const buildTrainings = (lang) => {
+  const strings = TRAINING_STRINGS[lang] || TRAINING_STRINGS.en;
+  return TRAINING_BASE.map((b, i) => Object.assign({}, b, strings[i]));
+};
+
+// Fallback (English) for initial state
+const FB_PRODUCTS  = buildProducts('en');
+const FB_TRAININGS = buildTrainings('en');
+
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
+// CATS is now built dynamically per language — see getCats(lang) below
+const getCats = (lang) => {
+  const L = CAT_LABELS[lang] || CAT_LABELS.en;
+  return [L.all, L.Seeds, L.Inputs, L.Trees, L.CashCrops, L.Equipment];
+};
+// Keep a static English CATS for any fallback reference
+const CATS = getCats('en');
+const DISTS = [
+  'Bugesera','Burera','Gakenke','Gasabo','Gatsibo','Gicumbi','Gisagara',
+  'Huye','Kamonyi','Karongi','Kayonza','Kicukiro','Kirehe','Muhanga',
+  'Musanze','Ngoma','Ngororero','Nyabihu','Nyagatare','Nyamasheke',
+  'Nyanza','Nyarugenge','Nyaruguru','Rubavu','Ruhango','Rulindo',
+  'Rusizi','Rutsiro','Rwamagana',
+];
+
+// ── TRANSLATIONS ──────────────────────────────────────────────────────────────
+
+
+const T = {
+  en: {
+    // Language picker
+    chooseLanguage: 'Choose your language',
+    langSub: 'You can change this later in Settings',
+    // Splash
+    tagline: 'Agri Marketplace',
+    poweredBy: 'Powered by One Acre Fund Rwanda',
+    // Auth
+    welcomeBack: 'Welcome back',
+    signInSub: 'Sign in to your OAF account',
+    joinTubura: 'Join Tubura',
+    createSub: 'Create your farmer account today',
+    fullName: 'Full name',
+    phoneNumber: 'Phone number',
+    passwordOpt: 'Password (optional)',
+    passwordPlaceholder: 'Enter password or use OTP',
+    districtLabel: 'District',
+    selectDistrict: 'Select your district',
+    sectorOpt: 'Sector (optional)',
+    sectorPlaceholder: 'Enter your sector',
+    sendCode: 'Send verification code',
+    continueBtn: 'Continue',
+    codeSentTo: 'Code sent to',
+    verifySignIn: 'Verify & Sign In',
+    createAccount: 'Create my account',
+    backBtn: 'Back',
+    newToTubura: 'New to Tubura?',
+    createAccountLink: 'Create account',
+    alreadyAccount: 'Already have an account?',
+    signIn: 'Sign in',
+    fillRequired: 'Fill all required fields',
+    validPhone: 'Enter a valid phone number',
+    enterCode: 'Enter the 6-digit code',
+    codeSentMsg: 'Code sent to ',
+    welcomeBackMsg: 'Welcome back!',
+    welcomeNewMsg: 'Welcome to Tubura!',
+    // Home
+    goodMorning: 'Good morning',
+    goodAfternoon: 'Good afternoon',
+    goodEvening: 'Good evening',
+    myDistrict: 'My district',
+    cartItems: 'Cart',
+    quickActions: 'Quick actions',
+    shop: 'Shop',
+    retailers: 'Retailers',
+    orders: 'Orders',
+    training: 'Training',
+    noSmartphone: 'No smartphone? Use USSD',
+    ussdSub: 'Works on any phone, no internet needed',
+    seasonTitle: 'Season A inputs now available',
+    seasonSub: 'Planting season Sept–Oct. Order DAP and seeds before stock runs out.',
+    topProducts: 'Top products',
+    seeAll: 'See all',
+    home: 'Home',
+    profile: 'Profile',
+    itemSingle: 'item',
+    itemPlural: 'items',
+    orderSingle: 'order',
+    orderPlural: 'orders',
+    // Shop
+    shopTitle: 'Shop',
+    shopSub: 'OAF-certified inputs & seedlings',
+    searchPlaceholder: 'Search products...',
+    inStock: 'In stock',
+    limited: 'Limited',
+    lowStock: 'Low',
+    pricePerUnit: 'Price per unit',
+    subtotal: 'Subtotal',
+    addToCart: 'Add to cart',
+    sold: 'sold',
+    // Retailers
+    findRetailer: 'Find Retailer',
+    findRetailerSub: 'Nearest OAF agro stores',
+    findNearYou: 'Find retailers near you',
+    useGPS: 'Use my GPS location',
+    locating: 'Locating...',
+    gpsError: 'GPS unavailable — select your district below.',
+    orSelectManual: 'or select manually',
+    yourDistrict: 'Your district',
+    selectDistrict2: 'Select district',
+    showNearby: 'Show nearby retailers',
+    retailersFound: 'retailers found',
+    nearbyRetailers: 'Nearby retailers',
+    changeLocation: 'Change location',
+    byMoto: 'by moto',
+    callRetailer: 'Call this retailer',
+    calling: 'Calling ',
+    // Cart
+    cartTitle: 'My Cart',
+    cartEmpty: 'Your cart is empty',
+    cartEmptySub: 'Add products to start your order',
+    browseProducts: 'Browse products',
+    checkout: 'Checkout',
+    proceedCheckout: 'Proceed to checkout',
+    continueShopping: 'Continue shopping',
+    deliveryFeeNote: 'Delivery fee calculated at checkout',
+    deliveryOptions: 'Delivery options',
+    selfPickup: 'Self pickup',
+    selfPickupSub: 'Collect at retailer. Free.',
+    standardDelivery: 'Standard delivery',
+    standardSub: '2–5 hours. Group moto delivery.',
+    expressDelivery: 'Express delivery',
+    expressSub: 'Under 1 hour. Priority.',
+    free: 'Free',
+    selectRetailer: 'Select retailer',
+    paymentMethod: 'Payment method',
+    mtnSub: 'Push to *182# on your phone',
+    airtelSub: 'Push to *185# on your phone',
+    cardSub: 'Debit or credit card',
+    paymentNote: 'Mobile money payments are instant. You can cancel for a full refund before shipment.',
+    reviewOrder: 'Review order',
+    orderSummary: 'Order summary',
+    products: 'Products',
+    delivery: 'Delivery',
+    payment: 'Payment',
+    pickupAt: 'Pickup at',
+    retailerLabel: 'Retailer',
+    total: 'Total',
+    confirmPayment: 'Confirm payment?',
+    confirmPayNote: 'This will send ',
+    confirmPayNote2: '. This action is instant and final.',
+    yesConfirm: 'Yes, confirm payment',
+    cancel: 'Cancel',
+    pay: 'Pay ',
+    stepOf: 'Step ',
+    of: ' of 3',
+    // Order confirmed
+    orderConfirmed: 'Order Confirmed!',
+    receiptSent: 'Receipt sent to your phone via SMS',
+    trackOrder: 'Track my order',
+    orderId: 'Order ID',
+    totalPaid: 'Total paid',
+    // Orders
+    ordersTitle: 'My Orders',
+    noOrders: 'No orders yet',
+    noOrdersSub: 'Your order history will appear here after your first purchase',
+    itemsOrdered: 'Items ordered',
+    cancelOrder: 'Cancel order & get refund',
+    // Order statuses
+    confirmed: 'Confirmed',
+    processing: 'Processing',
+    shipped: 'Shipped',
+    delivered: 'Delivered',
+    cancelled: 'Cancelled',
+    active: 'Active',
+    // Training
+    trainingTitle: 'Training',
+    trainingSub: 'Book an OAF agronomist visit to your farm',
+    yourTrainings: 'Your trainings',
+    sessionBooked: 'sessions booked',
+    sessionBookedSingle: 'session booked',
+    trainerConfirms: 'Trainer confirms by phone call',
+    allFree: 'All sessions are free',
+    atFarm: 'At your farm',
+    availableTrainings: 'Available trainings',
+    booked: 'Booked',
+    full: 'Full',
+    preferredDate: 'Preferred date',
+    trainerWillCall: 'A trainer will call ',
+    trainerWillCall2: ' to confirm the exact visit time.',
+    bookSession: 'Book training session',
+    farmVisit: 'Farm visit',
+    selectDate: 'Select a preferred date',
+    trainingBooked: 'Training booked! Trainer will call you.',
+    // Profile
+    profileTitle: 'Farmer Profile',
+    settings: 'Settings',
+    phone: 'Phone',
+    district: 'District',
+    farmerId: 'Farmer ID',
+    crops: 'Crops',
+    notRegistered: 'Not registered',
+    notifications: 'Notifications',
+    notificationsSub: 'SMS order updates',
+    changePin: 'Change PIN',
+    changePinSub: 'Update your security credentials',
+    language: 'Language',
+    languageSub: 'Change app language',
+    ussdAccess: 'USSD Access',
+    ussdSub2: 'Dial *689# from any phone',
+    aboutTubura: 'About Tubura',
+    aboutSub: 'Tubura v1.0 · One Acre Fund Rwanda',
+    signOut: 'Sign out',
+    comingSoon: 'Coming soon',
+    // Stock
+    highStock: 'High stock',
+    mediumStock: 'Medium stock',
+    lowStockLabel: 'Low stock',
+  },
+
+  rw: {
+    chooseLanguage: 'Hitamo ururimi rwawe',
+    langSub: 'Urashobora guhindura ibi nyuma mu Igenamiterere',
+    tagline: 'Isoko ry\'Ubuhinzi',
+    poweredBy: 'Byateguwe na One Acre Fund Rwanda',
+    welcomeBack: 'Murakaza neza',
+    signInSub: 'Injira mu konti yawe ya OAF',
+    joinTubura: 'Injira muri Tubura',
+    createSub: 'Fungura konti yawe uyu munsi',
+    fullName: 'Amazina yose',
+    phoneNumber: 'Nimero ya telefoni',
+    passwordOpt: 'Ijambo banga (ntibisabwa)',
+    passwordPlaceholder: 'Injiza ijambo banga cyangwa koresha OTP',
+    districtLabel: 'Akarere',
+    selectDistrict: 'Hitamo akarere kawe',
+    sectorOpt: 'Umurenge (ntibisabwa)',
+    sectorPlaceholder: 'Injiza umurenge wawe',
+    sendCode: 'Ohereza kode yo kwemeza',
+    continueBtn: 'Komeza',
+    codeSentTo: 'Kode yoherejwe kuri',
+    verifySignIn: 'Emeza no Kwinjira',
+    createAccount: 'Fungura konti yanjye',
+    backBtn: 'Subira inyuma',
+    newToTubura: 'Ntabwo ufite konti?',
+    createAccountLink: 'Fungura konti',
+    alreadyAccount: 'Usanzwe ufite konti?',
+    signIn: 'Injira',
+    fillRequired: 'Uzuza ibibisabwa byose',
+    validPhone: 'Injiza nimero ya telefoni ndende',
+    enterCode: 'Injiza kode y\'imibare 6',
+    codeSentMsg: 'Kode yoherejwe kuri ',
+    welcomeBackMsg: 'Murakaza neza!',
+    welcomeNewMsg: 'Murakaza neza muri Tubura!',
+    goodMorning: 'Muraho mu gitondo',
+    goodAfternoon: 'Muraho ku mugoroba',
+    goodEvening: 'Muraho nijoro',
+    myDistrict: 'Akarere kanjye',
+    cartItems: 'Agasanduku',
+    quickActions: 'Ibikorwa byihuse',
+    shop: 'Gutura',
+    retailers: 'Abavendesi',
+    orders: 'Amabwiriza',
+    training: 'Amahugurwa',
+    noSmartphone: 'Nta simu? Koresha USSD',
+    ussdSub: 'Bikora kuri simu iyo aryo yose, ntamurandasi bisabwa',
+    seasonTitle: 'Ibikoresho bya Sezonyi A biraboneka',
+    seasonSub: 'Igihe cyo gutera Nzeri–Ukwakira. Tegura DAP na mbuto mbere yuko ibyo kugurwa birangira.',
+    topProducts: 'Ibicuruzwa byinshi',
+    seeAll: 'Reba byose',
+    home: 'Ahabanza',
+    profile: 'Umwirondoro',
+    itemSingle: 'igicuruzwa',
+    itemPlural: 'ibicuruzwa',
+    orderSingle: 'itegeko',
+    orderPlural: 'amategeko',
+    shopTitle: 'Gutura',
+    shopSub: 'Ibikoresho by\'ubuhinzi byemejwe na OAF',
+    searchPlaceholder: 'Shakisha ibicuruzwa...',
+    inStock: 'Giraboneka',
+    limited: 'Bigufi',
+    lowStock: 'Bike',
+    pricePerUnit: 'Igiciro ku kigero',
+    subtotal: 'Igiteranyo',
+    addToCart: 'Shyira mu agasanduku',
+    sold: 'byaguriwe',
+    findRetailer: 'Shakisha Umuvendesi',
+    findRetailerSub: 'Abavendesi ba OAF bo hafi',
+    findNearYou: 'Shakisha abavendesi hafi yawe',
+    useGPS: 'Koresha GPS yanjye',
+    locating: 'Gushakisha...',
+    gpsError: 'GPS ntiboneka — hitamo akarere kawe hepfo.',
+    orSelectManual: 'cyangwa hitamo ku buryo bw\'intoki',
+    yourDistrict: 'Akarere kawe',
+    selectDistrict2: 'Hitamo akarere',
+    showNearby: 'Erekana abavendesi bo hafi',
+    retailersFound: 'abavendesi baboneka',
+    nearbyRetailers: 'Abavendesi bo hafi',
+    changeLocation: 'Hindura aho uri',
+    byMoto: 'na moto',
+    callRetailer: 'Hamagara umuvendesi',
+    calling: 'Guhamagara ',
+    cartTitle: 'Agasanduku kanjye',
+    cartEmpty: 'Agasanduku kawe kararuhutse',
+    cartEmptySub: 'Ongeraho ibicuruzwa gutangira itegeko ryawe',
+    browseProducts: 'Reba ibicuruzwa',
+    checkout: 'Kwishyura',
+    proceedCheckout: 'Komeza kwishyura',
+    continueShopping: 'Komeza gutura',
+    deliveryFeeNote: 'Amafaranga yo gutunga abarwa igihe cyo kwishyura',
+    deliveryOptions: 'Uburyo bwo gutunga',
+    selfPickup: 'Kunyagwa wenyine',
+    selfPickupSub: 'Nyago ku muvendesi. Nta mafaranga.',
+    standardDelivery: 'Gutunga bisanzwe',
+    standardSub: 'Amasaha 2-5. Gutunga hamwe na moto.',
+    expressDelivery: 'Gutunga vuba',
+    expressSub: 'Munsi y\'isaha 1. Ibanze.',
+    free: 'Ubuntu',
+    selectRetailer: 'Hitamo umuvendesi',
+    paymentMethod: 'Uburyo bwo kwishyura',
+    mtnSub: 'Koheza kuri *182# kuri telefoni yawe',
+    airtelSub: 'Koheza kuri *185# kuri telefoni yawe',
+    cardSub: 'Ikarita y\'inguzanyo cyangwa ya banki',
+    paymentNote: 'Kwishyura kwa mobile money bigenda vuba. Urashobora guhagarika no gusubizwa amafaranga mbere yuko itegeko ryawe ryimuka.',
+    reviewOrder: 'Reba itegeko',
+    orderSummary: 'Incamake y\'itegeko',
+    products: 'Ibicuruzwa',
+    delivery: 'Gutunga',
+    payment: 'Kwishyura',
+    pickupAt: 'Nyago kuri',
+    retailerLabel: 'Umuvendesi',
+    total: 'Igiteranyo cyose',
+    confirmPayment: 'Emeza kwishyura?',
+    confirmPayNote: 'Ibi bizoherereza ',
+    confirmPayNote2: '. Ibi biroroshye kandi ntibihinduka.',
+    yesConfirm: 'Yego, emeza kwishyura',
+    cancel: 'Hagarika',
+    pay: 'Ishyura ',
+    stepOf: 'Intambwe ',
+    of: ' kuri 3',
+    orderConfirmed: 'Itegeko Ryemejwe!',
+    receiptSent: 'Irisiti yoherejwe kuri telefoni yawe',
+    trackOrder: 'Kurikirana itegeko ryanjye',
+    orderId: 'Inomero y\'itegeko',
+    totalPaid: 'Igiteranyo cyishyuwe',
+    ordersTitle: 'Amategeko Yanjye',
+    noOrders: 'Nta mategeko nawe',
+    noOrdersSub: 'Amateka y\'amategeko yawe azagaragara hano nyuma yo kugura bwa mbere',
+    itemsOrdered: 'Ibicuruzwa byatanzwe',
+    cancelOrder: 'Hagarika itegeko no gusubizwa amafaranga',
+    confirmed: 'Byemejwe',
+    processing: 'Bigenda',
+    shipped: 'Byimutse',
+    delivered: 'Byageze',
+    cancelled: 'Bihagaritswe',
+    active: 'Birakora',
+    trainingTitle: 'Amahugurwa',
+    trainingSub: 'Tegeka inzobere ya OAF gutanga inyigisho ku murima wawe',
+    yourTrainings: 'Amahugurwa yawe',
+    sessionBooked: 'amasession yateguwe',
+    sessionBookedSingle: 'isession yateguwe',
+    trainerConfirms: 'Umuhuzabikorwa azaguhamagara',
+    allFree: 'Amasession yose ni ubuntu',
+    atFarm: 'Ku murima wawe',
+    availableTrainings: 'Amahugurwa aboneka',
+    booked: 'Yateguwe',
+    full: 'Yuzuyemo',
+    preferredDate: 'Itariki wishimiye',
+    trainerWillCall: 'Umuhuzabikorwa azahamagara ',
+    trainerWillCall2: ' kwemeza igihe nyacyo cyo gusura.',
+    bookSession: 'Tegeka isession y\'amahugurwa',
+    farmVisit: 'Gusura umurima',
+    selectDate: 'Hitamo itariki wishimiye',
+    trainingBooked: 'Amahugurwa yateguwe! Umuhuzabikorwa azakuhamagara.',
+    profileTitle: 'Umwirondoro w\'Ubuhinzi',
+    settings: 'Igenamiterere',
+    phone: 'Telefoni',
+    district: 'Akarere',
+    farmerId: 'Inomero y\'Umuhinzi',
+    crops: 'Imyaka',
+    notRegistered: 'Ntiyandikishijwe',
+    notifications: 'Imenyesha',
+    notificationsSub: 'Imenyesha y\'itegeko ya SMS',
+    changePin: 'Hindura PIN',
+    changePinSub: 'Vugurura ibanga rya sekurite',
+    language: 'Ururimi',
+    languageSub: 'Hindura ururimi rw\'porogaramu',
+    ussdAccess: 'Kwinjira kwa USSD',
+    ussdSub2: 'Telefona *689# kuri simu iyo aryo yose',
+    aboutTubura: 'Ibyerekeye Tubura',
+    aboutSub: 'Tubura v1.0 · One Acre Fund Rwanda',
+    signOut: 'Sohoka',
+    comingSoon: 'Biri mu nzira',
+    highStock: 'Biraboneka cyane',
+    mediumStock: 'Biraboneka',
+    lowStockLabel: 'Bike',
+  },
+
+  fr: {
+    chooseLanguage: 'Choisissez votre langue',
+    langSub: 'Vous pouvez modifier cela plus tard dans les Paramètres',
+    tagline: 'Marché Agricole',
+    poweredBy: 'Propulsé par One Acre Fund Rwanda',
+    welcomeBack: 'Bienvenue',
+    signInSub: 'Connectez-vous à votre compte OAF',
+    joinTubura: 'Rejoignez Tubura',
+    createSub: 'Créez votre compte d\'agriculteur aujourd\'hui',
+    fullName: 'Nom complet',
+    phoneNumber: 'Numéro de téléphone',
+    passwordOpt: 'Mot de passe (optionnel)',
+    passwordPlaceholder: 'Entrez le mot de passe ou utilisez OTP',
+    districtLabel: 'District',
+    selectDistrict: 'Sélectionnez votre district',
+    sectorOpt: 'Secteur (optionnel)',
+    sectorPlaceholder: 'Entrez votre secteur',
+    sendCode: 'Envoyer le code de vérification',
+    continueBtn: 'Continuer',
+    codeSentTo: 'Code envoyé à',
+    verifySignIn: 'Vérifier et Se Connecter',
+    createAccount: 'Créer mon compte',
+    backBtn: 'Retour',
+    newToTubura: 'Nouveau sur Tubura?',
+    createAccountLink: 'Créer un compte',
+    alreadyAccount: 'Vous avez déjà un compte?',
+    signIn: 'Se connecter',
+    fillRequired: 'Remplissez tous les champs obligatoires',
+    validPhone: 'Entrez un numéro de téléphone valide',
+    enterCode: 'Entrez le code à 6 chiffres',
+    codeSentMsg: 'Code envoyé à ',
+    welcomeBackMsg: 'Bon retour!',
+    welcomeNewMsg: 'Bienvenue sur Tubura!',
+    goodMorning: 'Bonjour',
+    goodAfternoon: 'Bon après-midi',
+    goodEvening: 'Bonsoir',
+    myDistrict: 'Mon district',
+    cartItems: 'Panier',
+    quickActions: 'Actions rapides',
+    shop: 'Boutique',
+    retailers: 'Revendeurs',
+    orders: 'Commandes',
+    training: 'Formation',
+    noSmartphone: 'Pas de smartphone? Utilisez USSD',
+    ussdSub: 'Fonctionne sur tout téléphone, sans internet',
+    seasonTitle: 'Intrants Saison A disponibles',
+    seasonSub: 'Saison de plantation sept–oct. Commandez DAP et semences avant rupture de stock.',
+    topProducts: 'Produits phares',
+    seeAll: 'Voir tout',
+    home: 'Accueil',
+    profile: 'Profil',
+    itemSingle: 'article',
+    itemPlural: 'articles',
+    orderSingle: 'commande',
+    orderPlural: 'commandes',
+    shopTitle: 'Boutique',
+    shopSub: 'Intrants et semis certifiés OAF',
+    searchPlaceholder: 'Rechercher des produits...',
+    inStock: 'En stock',
+    limited: 'Limité',
+    lowStock: 'Bas',
+    pricePerUnit: 'Prix par unité',
+    subtotal: 'Sous-total',
+    addToCart: 'Ajouter au panier',
+    sold: 'vendus',
+    findRetailer: 'Trouver Revendeur',
+    findRetailerSub: 'Magasins agro OAF les plus proches',
+    findNearYou: 'Trouver des revendeurs près de vous',
+    useGPS: 'Utiliser ma position GPS',
+    locating: 'Localisation...',
+    gpsError: 'GPS indisponible — sélectionnez votre district ci-dessous.',
+    orSelectManual: 'ou sélectionner manuellement',
+    yourDistrict: 'Votre district',
+    selectDistrict2: 'Sélectionner district',
+    showNearby: 'Afficher les revendeurs proches',
+    retailersFound: 'revendeurs trouvés',
+    nearbyRetailers: 'Revendeurs proches',
+    changeLocation: 'Changer de lieu',
+    byMoto: 'en moto',
+    callRetailer: 'Appeler ce revendeur',
+    calling: 'Appel de ',
+    cartTitle: 'Mon Panier',
+    cartEmpty: 'Votre panier est vide',
+    cartEmptySub: 'Ajoutez des produits pour commencer votre commande',
+    browseProducts: 'Parcourir les produits',
+    checkout: 'Paiement',
+    proceedCheckout: 'Procéder au paiement',
+    continueShopping: 'Continuer les achats',
+    deliveryFeeNote: 'Frais de livraison calculés à la caisse',
+    deliveryOptions: 'Options de livraison',
+    selfPickup: 'Retrait en magasin',
+    selfPickupSub: 'Retirer chez le revendeur. Gratuit.',
+    standardDelivery: 'Livraison standard',
+    standardSub: '2-5 heures. Livraison groupée en moto.',
+    expressDelivery: 'Livraison express',
+    expressSub: 'En moins d\'1 heure. Prioritaire.',
+    free: 'Gratuit',
+    selectRetailer: 'Sélectionner revendeur',
+    paymentMethod: 'Méthode de paiement',
+    mtnSub: 'Envoyez à *182# sur votre téléphone',
+    airtelSub: 'Envoyez à *185# sur votre téléphone',
+    cardSub: 'Carte de débit ou crédit',
+    paymentNote: 'Les paiements mobile money sont instantanés. Vous pouvez annuler pour un remboursement complet avant l\'expédition.',
+    reviewOrder: 'Vérifier la commande',
+    orderSummary: 'Récapitulatif de commande',
+    products: 'Produits',
+    delivery: 'Livraison',
+    payment: 'Paiement',
+    pickupAt: 'Retrait chez',
+    retailerLabel: 'Revendeur',
+    total: 'Total',
+    confirmPayment: 'Confirmer le paiement?',
+    confirmPayNote: 'Cela enverra ',
+    confirmPayNote2: '. Cette action est instantanée et définitive.',
+    yesConfirm: 'Oui, confirmer le paiement',
+    cancel: 'Annuler',
+    pay: 'Payer ',
+    stepOf: 'Étape ',
+    of: ' sur 3',
+    orderConfirmed: 'Commande Confirmée!',
+    receiptSent: 'Reçu envoyé sur votre téléphone par SMS',
+    trackOrder: 'Suivre ma commande',
+    orderId: 'N° de commande',
+    totalPaid: 'Total payé',
+    ordersTitle: 'Mes Commandes',
+    noOrders: 'Aucune commande',
+    noOrdersSub: 'Votre historique de commandes apparaîtra ici après votre premier achat',
+    itemsOrdered: 'Articles commandés',
+    cancelOrder: 'Annuler la commande et obtenir un remboursement',
+    confirmed: 'Confirmé',
+    processing: 'En cours',
+    shipped: 'Expédié',
+    delivered: 'Livré',
+    cancelled: 'Annulé',
+    active: 'Actif',
+    trainingTitle: 'Formation',
+    trainingSub: 'Réservez une visite d\'agronome OAF à votre ferme',
+    yourTrainings: 'Vos formations',
+    sessionBooked: 'sessions réservées',
+    sessionBookedSingle: 'session réservée',
+    trainerConfirms: 'Le formateur confirme par appel téléphonique',
+    allFree: 'Toutes les sessions sont gratuites',
+    atFarm: 'À votre ferme',
+    availableTrainings: 'Formations disponibles',
+    booked: 'Réservé',
+    full: 'Complet',
+    preferredDate: 'Date préférée',
+    trainerWillCall: 'Un formateur appellera ',
+    trainerWillCall2: ' pour confirmer l\'heure exacte de visite.',
+    bookSession: 'Réserver une session de formation',
+    farmVisit: 'Visite à la ferme',
+    selectDate: 'Sélectionnez une date préférée',
+    trainingBooked: 'Formation réservée! Le formateur vous appellera.',
+    profileTitle: 'Profil Agricole',
+    settings: 'Paramètres',
+    phone: 'Téléphone',
+    district: 'District',
+    farmerId: 'ID Agriculteur',
+    crops: 'Cultures',
+    notRegistered: 'Non enregistré',
+    notifications: 'Notifications',
+    notificationsSub: 'Mises à jour de commande par SMS',
+    changePin: 'Changer le PIN',
+    changePinSub: 'Mettre à jour vos identifiants de sécurité',
+    language: 'Langue',
+    languageSub: 'Changer la langue de l\'application',
+    ussdAccess: 'Accès USSD',
+    ussdSub2: 'Composez *689# sur n\'importe quel téléphone',
+    aboutTubura: 'À propos de Tubura',
+    aboutSub: 'Tubura v1.0 · One Acre Fund Rwanda',
+    signOut: 'Se déconnecter',
+    comingSoon: 'Bientôt disponible',
+    highStock: 'Bien approvisionné',
+    mediumStock: 'Stock moyen',
+    lowStockLabel: 'Stock bas',
+  },
+};
+
+
+// Language hook — returns translations AND translated data
+const useLang = () => {
+  const {lang} = useApp();
+  const t = T[lang] || T.en;
+  const lProducts  = buildProducts(lang);
+  const lTrainings = buildTrainings(lang);
+  const lCats      = getCats(lang);
+  return Object.assign({}, t, {_products: lProducts, _trainings: lTrainings, _cats: lCats, _lang: lang});
+};
+
+// ── CONTEXT ────────────────────────────────────────────────────────────────
+const Ctx = createContext();
+function AppProvider({children}) {
+  const [user,setUser]         = useState(null);
+  const [screen,setScreen]     = useState('lang');
+  const [lang,setLang]         = useState('en');
+  const [cart,setCart]         = useState([]);
+  const [orders,setOrders]     = useState([]);
+  const [toast,setToast]       = useState(null);
+  const [authMode,setAuthMode] = useState('login');
+  const [products,setProducts] = useState([]);
+  const [retailers,setRetailers] = useState([]);
+  const [trainings,setTrainings] = useState([]);
+  const [loaded,setLoaded]     = useState(false);
+  const tRef = useRef(null);
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/api/products').catch(() => null),
+      api.get('/api/retailers').catch(() => FB_RETAILERS),
+      api.get('/api/trainings').catch(() => null),
+    ]).then(([p,r,tr]) => {
+      setProducts(p && p.length ? p : buildProducts(lang));
+      setRetailers(r && r.length ? r : FB_RETAILERS);
+      setTrainings(tr && tr.length ? tr : buildTrainings(lang));
+    }).catch(() => {
+      setProducts(buildProducts(lang));
+      setRetailers(FB_RETAILERS);
+      setTrainings(buildTrainings(lang));
+    }).finally(() => setLoaded(true));
+  }, []); // eslint-disable-line
+
+  // Rebuild translated lists whenever language changes
+  useEffect(() => {
+    setProducts(buildProducts(lang));
+    setTrainings(buildTrainings(lang));
+  }, [lang]);
+
+  const showToast = useCallback((msg, dur) => {
+    clearTimeout(tRef.current);
+    setToast(msg);
+    tRef.current = setTimeout(() => setToast(null), dur || 2600);
+  }, []);
+
+  const addToCart = useCallback((product, qty) => {
+    const q = qty || 1;
+    setCart(prev => {
+      const ex = prev.find(i => i.id === product.id);
+      if (ex) return prev.map(i => i.id === product.id ? {...i, qty: i.qty + q} : i);
+      return [...prev, {id:product.id, name:product.name, price:product.price, unit:product.unit, img:product.img, category:product.category, qty:q}];
+    });
+    const cartMsg = {en:'Added to cart', rw:'Byashyizwe mu gasanduku', fr:'Ajouté au panier'};
+    showToast(cartMsg[lang] || cartMsg.en);
+  }, [showToast, lang]);
+
+  const removeFromCart = useCallback(id => setCart(p => p.filter(i => i.id !== id)), []);
+
+  const updateQty = useCallback((id, qty) => {
+    if (qty < 1) { removeFromCart(id); return; }
+    setCart(p => p.map(i => i.id === id ? {...i, qty} : i));
+  }, [removeFromCart]);
+
+  const clearCart = useCallback(() => setCart([]), []);
+
+  const placeOrder = useCallback(async (orderData) => {
+    const payload = {
+      user_phone: user ? user.phone : '',
+      retailer_id: orderData.retailer_id || 1,
+      delivery_method: orderData.delivery_method,
+      speed: orderData.speed,
+      payment_method: orderData.payment_method,
+      items: cart.map(i => ({id:i.id,name:i.name,price:i.price,unit:i.unit,qty:i.qty})),
+    };
+    let srv = null;
+    try { srv = await api.post('/api/orders', payload); } catch(_) {}
+    const now = new Date();
+    const newOrder = {
+      id: (srv && srv.id) || ('TUB' + now.getTime().toString().slice(-6)),
+      items: cart.slice(),
+      total: orderData.total,
+      payment_method: orderData.payment_method,
+      delivery_method: orderData.delivery_method,
+      speed: orderData.speed,
+      retailer: orderData.retailer,
+      status: 'confirmed',
+      date: now.toLocaleDateString('en-RW', {day:'numeric',month:'short',year:'numeric'}),
+      time: now.toLocaleTimeString('en-RW', {hour:'2-digit',minute:'2-digit'}),
+    };
+    setOrders(p => [newOrder, ...p]);
+    clearCart();
+    return newOrder;
+  }, [cart, clearCart, user]);
+
+  const cartCount = useMemo(() => cart.reduce((s,i) => s+i.qty, 0), [cart]);
+  const cartTotal = useMemo(() => cart.reduce((s,i) => s+i.price*i.qty, 0), [cart]);
+
+  return (
+    <Ctx.Provider value={{
+      user,setUser,screen,setScreen,lang,setLang,cart,cartCount,cartTotal,
+      addToCart,removeFromCart,updateQty,clearCart,placeOrder,
+      orders,setOrders,toast,showToast,authMode,setAuthMode,
+      products,retailers,trainings,loaded
+    }}>
+      {children}
+    </Ctx.Provider>
+  );
+}
+const useApp = () => useContext(Ctx);
+
+// ── ICONS ──────────────────────────────────────────────────────────────────
+const PATHS = {
+  'home': 'M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z M9 21V12h6v9',
+  'shop': 'M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0',
+  'pin': 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z M14.12 10a2 2 0 11-4 0 2 2 0 014 0',
+  'cart': 'M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0',
+  'orders': 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M16 13H8 M16 17H8',
+  'profile': 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2 M16 7a4 4 0 11-8 0 4 4 0 018 0',
+  'training': 'M22 10v6M2 10l10-5 10 5-10 5z M6 12v5c3 3 9 3 12 0v-5',
+  'phone': 'M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.1a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .53h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z',
+  'check': 'M20 6L9 17l-5-5',
+  'x': 'M18 6L6 18 M6 6l12 12',
+  'arrow': 'M5 12h14 M12 5l7 7-7 7',
+  'back': 'M19 12H5 M12 19l-7-7 7-7',
+  'search': 'M11 19a8 8 0 100-16 8 8 0 000 16z M21 21l-4.35-4.35',
+  'plus': 'M12 5v14 M5 12h14',
+  'eye': 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M14.12 12a2 2 0 11-4 0 2 2 0 014 0',
+  'lock': 'M5 11V7a7 7 0 0114 0v4 M3 11h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1V11z',
+  'logout': 'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4 M16 17l5-5-5-5 M21 12H9',
+  'bell': 'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 01-3.46 0',
+  'ussd': 'M5 2h14a2 2 0 012 2v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2z M12 18h.01',
+  'leaf': 'M2 22c1-5 5-9 10-10 0 5-4 9-10 10z M22 2c-1 5-5 9-10 10 0-5 4-9 10-10z',
+  'info': 'M12 22a10 10 0 110-20 10 10 0 010 20z M12 8v4 M12 16h.01',
+  'calendar': 'M3 4h18a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2z M16 2v4 M8 2v4 M3 10h18',
+};
+
+function IC({n, size, color, sw}) {
+  const sz=size||20, col=color||'currentColor', s=sw||1.8;
+  const segs = (PATHS[n]||'').split(/(?=M )/).filter(Boolean);
+  return (
+    <svg width={sz} height={sz} viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth={s} strokeLinecap="round" strokeLinejoin="round">
+      {segs.map((d,i) => <path key={i} d={d.trim()}/>)}
+    </svg>
+  );
+}
+
+// ── OAF LOGO ───────────────────────────────────────────────────────────────
+function OAFLogo({width, height, opacity}) {
+  return (
+    <svg viewBox="0 0 261 202" width={width||74} height={height||57} xmlns="http://www.w3.org/2000/svg" style={{display:'block',opacity:opacity||1}}>
+      <g transform="translate(0,202) scale(0.1,-0.1)" fill="#FFFFF" stroke="none">
+        <path d="M510 1416 c-103 -29 -208 -104 -245 -176 -18 -36 -11 -42 80 -65 67 -17 124 -40 135 -54 3 -4 36 -27 75 -51 38 -25 93 -64 121 -86 122 -99 189 -126 309 -122 l70 2 17 -50 c19 -57 22 -123 8 -214 -28 -178 -26 -199 17 -219 39 -18 53 6 53 88 0 102 40 211 77 211 8 0 47 -11 85 -25 38 -14 100 -28 138 -31 72 -7 230 12 230 27 0 5 10 9 23 9 12 0 47 14 77 30 208 114 309 150 422 150 67 0 71 9 39 76 -74 150 -219 252 -416 290 -77 15 -100 16 -189 5 -110 -13 -235 -55 -301 -99 -21 -15 -58 -50 -81 -79 -48 -59 -64 -115 -64 -227 0 -60 -3 -76 -20 -91 -11 -10 -20 -16 -20 -14 -1 2 -3 28 -6 58 -2 31 -15 74 -30 101 l-26 47 22 43 c12 24 25 69 27 100 10 105 -22 190 -96 259 -39 35 -161 89 -241 106 -85 18 -228 18 -290 1z m267 -17 c95 -23 203 -68 247 -103 19 -15 47 -50 62 -79 38 -70 41 -187 6 -258 l-22 -46 27 -59 c24 -54 31 -87 32 -166 1 -16 6 -28 12 -28 5 0 8 3 6 8 -3 4 10 18 29 32 l33 25 1 92 c0 79 4 101 27 149 30 64 79 116 138 147 64 34 174 67 255 78 74 10 215 3 235 -10 6 -4 29 -13 53 -20 61 -17 191 -96 230 -139 28 -32 92 -141 92 -157 0 -3 -24 -5 -52 -5 -97 -1 -228 -44 -352 -116 -131 -77 -198 -96 -336 -97 -104 0 -123 2 -196 30 -66 25 -84 28 -97 18 -9 -7 -17 -17 -17 -24 0 -6 -4 -11 -8 -11 -11 0 -32 -46 -38 -80 -3 -14 -10 -42 -15 -64 -6 -21 -10 -52 -9 -70 3 -58 2 -61 -20 -41 -15 13 -20 31 -20 66 0 26 4 50 9 53 15 10 23 201 11 260 -18 88 -32 99 -126 101 -98 1 -149 16 -207 58 -299 215 -338 238 -434 258 l-61 13 26 35 c56 77 126 124 217 146 65 16 202 18 262 4z"/>
+      </g>
+    </svg>
+  );
+}
+
+// ── LANGUAGE PICKER ────────────────────────────────────────────────────────
+function LangPicker() {
+  const {setScreen,setLang} = useApp();
+  const choose = code => { setLang(code); setScreen('splash'); };
+  const langs = [
+    {code:'en', native:'English',    flag:'🇬🇧', sub:'English'},
+    {code:'rw', native:'Kinyarwanda', flag:'🇷🇼', sub:'Ikinyarwanda'},
+    {code:'fr', native:'Français',   flag:'🇫🇷', sub:'French / Français'},
+  ];
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column',background:'linear-gradient(160deg,#1C3D2A 0%,#2A5C3F 45%,#3D7A55 100%)',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',top:'-100px',right:'-100px',width:'360px',height:'360px',borderRadius:'50%',border:'1px solid rgba(255,255,255,.07)',pointerEvents:'none'}}/>
+      <div style={{position:'absolute',bottom:'-80px',left:'-80px',width:'280px',height:'280px',borderRadius:'50%',border:'1px solid rgba(255,255,255,.05)',pointerEvents:'none'}}/>
+      <div style={{paddingTop:'72px',display:'flex',flexDirection:'column',alignItems:'center',position:'relative',zIndex:1}}>
+        <div style={{width:'80px',height:'80px',background:'rgba(255,255,255,.11)',borderRadius:'24px',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'18px',border:'1.5px solid rgba(255,255,255,.18)',boxShadow:'0 16px 48px rgba(0,0,0,.3)',padding:'14px'}}>
+          <OAFLogo width={52} height={40}/>
+        </div>
+        <div style={{fontFamily:'Fraunces,serif',fontSize:'40px',fontWeight:'900',color:'white',letterSpacing:'-2px',lineHeight:'1',marginBottom:'6px'}}>Tubura</div>
+        <div style={{fontSize:'11px',color:'rgba(255,255,255,.4)',letterSpacing:'.18em',textTransform:'uppercase',fontWeight:'600'}}>Agri Marketplace</div>
+        <div style={{width:'40px',height:'2px',background:'linear-gradient(90deg,transparent,#4CAF78,transparent)',borderRadius:'2px',marginTop:'14px'}}/>
+      </div>
+      <div style={{flex:'1',display:'flex',flexDirection:'column',justifyContent:'center',padding:'32px 24px 48px'}}>
+        <div className="fu" style={{animationDelay:'.15s'}}>
+          <div style={{textAlign:'center',marginBottom:'28px'}}>
+            <div style={{fontSize:'22px',marginBottom:'10px'}}>🌍</div>
+            <div style={{fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700',color:'white',marginBottom:'6px'}}>Choose your language</div>
+            <div style={{fontSize:'13px',color:'rgba(255,255,255,.45)'}}>Hitamo ururimi / Choisissez votre langue</div>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+            {langs.map((l,i) => (
+              <button key={l.code} className="fu" onClick={() => choose(l.code)}
+                style={{animationDelay:(0.25+i*0.08)+'s',display:'flex',alignItems:'center',gap:'16px',padding:'18px 20px',background:'rgba(255,255,255,.10)',border:'1.5px solid rgba(255,255,255,.16)',borderRadius:'18px',cursor:'pointer',width:'100%',textAlign:'left'}}>
+                <div style={{width:'48px',height:'48px',borderRadius:'14px',background:'rgba(255,255,255,.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'24px',flexShrink:'0',border:'1px solid rgba(255,255,255,.14)'}}>{l.flag}</div>
+                <div style={{flex:'1'}}>
+                  <div style={{fontFamily:'Fraunces,serif',fontSize:'19px',fontWeight:'700',color:'white',marginBottom:'2px'}}>{l.native}</div>
+                  <div style={{fontSize:'12px',color:'rgba(255,255,255,.45)',fontWeight:'500'}}>{l.sub}</div>
+                </div>
+                <IC n="arrow" size={18} color="rgba(255,255,255,.4)"/>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{position:'absolute',bottom:'24px',left:'0',right:'0',textAlign:'center'}}>
+        <div style={{fontSize:'10px',color:'rgba(255,255,255,.22)',letterSpacing:'.14em',textTransform:'uppercase'}}>Powered by One Acre Fund Rwanda</div>
+      </div>
+    </div>
+  );
+}
+
+// ── SPLASH ─────────────────────────────────────────────────────────────────
+function Splash() {
+  const {setScreen,lang} = useApp();
+  const t = T[lang] || T.en;
+  useEffect(() => {
+    const timer = setTimeout(() => setScreen('auth'), 2800);
+    return () => clearTimeout(timer);
+  }, []);
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'linear-gradient(160deg,#1C3D2A 0%,#2A5C3F 45%,#3D7A55 100%)',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',top:'-120px',right:'-120px',width:'420px',height:'420px',borderRadius:'50%',border:'1.5px solid rgba(255,255,255,.06)',pointerEvents:'none'}}/>
+      <div style={{position:'absolute',bottom:'-100px',left:'-100px',width:'360px',height:'360px',borderRadius:'50%',border:'1px solid rgba(255,255,255,.05)',pointerEvents:'none'}}/>
+      <div style={{position:'absolute',top:'14%',left:'8%',opacity:'.09'}} className="flt"><OAFLogo width={56} height={43}/></div>
+      <div style={{position:'absolute',bottom:'20%',right:'6%',opacity:'.07',animationDelay:'1.8s'}} className="flt"><OAFLogo width={40} height={31}/></div>
+      <div className="fu" style={{textAlign:'center',zIndex:1,animationDelay:'.1s',display:'flex',flexDirection:'column',alignItems:'center'}}>
+        <div style={{width:'116px',height:'116px',background:'rgba(255,255,255,.10)',borderRadius:'32px',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'28px',border:'1.5px solid rgba(255,255,255,.2)',boxShadow:'0 28px 72px rgba(0,0,0,.38)',padding:'24px',position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:'0',left:'0',right:'0',height:'50%',background:'linear-gradient(180deg,rgba(255,255,255,.14),transparent)',borderRadius:'32px 32px 0 0',pointerEvents:'none'}}/>
+          <div style={{position:'relative',zIndex:1}}><OAFLogo width={68} height={52}/></div>
+        </div>
+        <div style={{fontFamily:'Fraunces,serif',fontSize:'58px',fontWeight:'900',color:'white',letterSpacing:'-3px',lineHeight:'1',marginBottom:'10px',textShadow:'0 4px 28px rgba(0,0,0,.28)'}}>Tubura</div>
+        <div style={{fontSize:'11px',color:'rgba(255,255,255,.4)',letterSpacing:'.26em',textTransform:'uppercase',fontWeight:'600'}}>{t.tagline}</div>
+        <div style={{width:'52px',height:'2px',background:'linear-gradient(90deg,transparent,#4CAF78,transparent)',borderRadius:'2px',marginTop:'22px',opacity:'.85'}}/>
+      </div>
+
+    </div>
+  );
+}
+
+// ── AUTH ───────────────────────────────────────────────────────────────────
+function Auth() {
+  const {setUser,setScreen,authMode,setAuthMode,showToast} = useApp();
+  const t = useLang();
+  const [step,setStep]     = useState(1);
+  const [phone,setPhone]   = useState('');
+  const [password,setPassword] = useState('');
+  const [showPw,setShowPw] = useState(false);
+  const [otp,setOtp]       = useState(['','','','','','']);
+  const [name,setName]     = useState('');
+  const [district,setDistrict] = useState('');
+  const [sector,setSector] = useState('');
+  const [loading,setLoading] = useState(false);
+  const refs = useRef([]);
+  const isLogin = authMode === 'login';
+
+  const handleOtpChange = (i,val) => {
+    if (val.length > 1) return;
+    const n = otp.slice(); n[i] = val; setOtp(n);
+    if (val && i < 5 && refs.current[i+1]) refs.current[i+1].focus();
+  };
+  const handleOtpKey = (i,e) => {
+    if (e.key === 'Backspace' && !otp[i] && i > 0 && refs.current[i-1]) refs.current[i-1].focus();
+  };
+
+  const handleContinue = async () => {
+    if (step === 1) {
+      if (!isLogin && (!name || !phone || !district)) { showToast(t.fillRequired); return; }
+      if (!phone || phone.length < 10) { showToast(t.validPhone); return; }
+      setLoading(true);
+      try { await api.post('/api/auth/request-otp', {phone}); } catch(_) {}
+      showToast(t.codeSentMsg + phone);
+      setLoading(false); setStep(2);
+    } else {
+      const code = otp.join('');
+      if (code.length < 6) { showToast(t.enterCode); return; }
+      setLoading(true);
+      let userData = null;
+      try { userData = await api.post('/api/auth/verify-otp', {phone,code}); }
+      catch(_) { userData = {phone, name: name||'Farmer', district: district||'Gasabo', farmer_id: 'OAF-'+Math.floor(Math.random()*90000+10000)}; }
+      if (!isLogin) {
+        try { const s = await api.post('/api/auth/signup',{name,phone,district,sector}); userData = Object.assign({},userData,s,{name,district}); }
+        catch(_) { userData = Object.assign({},userData,{name,district}); }
+      }
+      setUser(userData); setScreen('main');
+      showToast(isLogin ? t.welcomeBackMsg : t.welcomeNewMsg);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column',background:'var(--cr)'}}>
+      <div style={{background:'linear-gradient(145deg,#1C3D2A 0%,#2A5C3F 60%,#3D7A55 100%)',padding:'52px 26px 32px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',top:'-60px',right:'-60px',width:'200px',height:'200px',borderRadius:'50%',border:'1px solid rgba(255,255,255,.08)',pointerEvents:'none'}}/>
+        <div style={{fontSize:'40px',marginBottom:'14px'}}>{isLogin ? '🌿' : '🌱'}</div>
+        <div style={{fontFamily:'Fraunces,serif',fontSize:'28px',fontWeight:'700',color:'white',letterSpacing:'-.02em',marginBottom:'6px'}}>{isLogin ? t.welcomeBack : t.joinTubura}</div>
+        <div style={{fontSize:'14px',color:'rgba(255,255,255,.55)',fontWeight:'300'}}>{isLogin ? t.signInSub : t.createSub}</div>
+        <div style={{position:'absolute',bottom:'0',left:'26px',width:'48px',height:'3px',background:'linear-gradient(90deg,#4CAF78,#A8DDB5)',borderRadius:'2px'}}/>
+      </div>
+      <div style={{flex:'1',padding:'24px 22px',overflowY:'auto'}}>
+        <div className="dots">
+          <div className={step>=1?'dot on':'dot'}/>
+          <div className={step>=2?'dot on':'dot'}/>
+        </div>
+        {step===1 && (
+          <div className="fu">
+            {!isLogin && <div className="ig"><label>{t.fullName} *</label><input placeholder="e.g. Mugisha Jean" value={name} onChange={e=>setName(e.target.value)}/></div>}
+            <div className="ig"><label>{t.phoneNumber} *</label><input type="tel" placeholder="+250 7XX XXX XXX" value={phone} onChange={e=>setPhone(e.target.value)}/></div>
+            {isLogin && (
+              <div className="ig"><label>{t.passwordOpt}</label>
+                <div style={{position:'relative'}}>
+                  <input type={showPw?'text':'password'} placeholder={t.passwordPlaceholder} value={password} onChange={e=>setPassword(e.target.value)} style={{paddingRight:'48px'}}/>
+                  <button onClick={()=>setShowPw(!showPw)} style={{position:'absolute',right:'14px',top:'50%',transform:'translateY(-50%)',color:'var(--ink3)',padding:'4px'}}><IC n="eye" size={18} color="var(--ink3)"/></button>
+                </div>
+              </div>
+            )}
+            {!isLogin && (
+              <>
+                <div className="ig"><label>{t.districtLabel} *</label>
+                  <select value={district} onChange={e=>setDistrict(e.target.value)}>
+                    <option value="">{t.selectDistrict}</option>
+                    {DISTS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div className="ig"><label>{t.sectorOpt}</label><input placeholder={t.sectorPlaceholder} value={sector} onChange={e=>setSector(e.target.value)}/></div>
+              </>
+            )}
+            <button className="btn bp bw" style={{marginTop:'4px',borderRadius:'14px'}} onClick={handleContinue} disabled={loading}>
+              {loading ? <span className="spin"/> : (isLogin ? t.sendCode : t.continueBtn)}
+            </button>
+          </div>
+        )}
+        {step===2 && (
+          <div className="fu">
+            <div style={{textAlign:'center',marginBottom:'28px'}}>
+              <p style={{fontSize:'14px',color:'var(--ink3)',marginBottom:'4px'}}>{t.codeSentTo}</p>
+              <p style={{fontSize:'17px',fontWeight:'700',color:'var(--ink)',fontFamily:'Fraunces,serif'}}>{phone}</p>
+            </div>
+            <div style={{display:'flex',gap:'8px',justifyContent:'center',marginBottom:'28px'}}>
+              {otp.map((v,i) => (
+                <input key={i} ref={el=>refs.current[i]=el} type="number" inputMode="numeric" maxLength={1} value={v}
+                  onChange={e=>handleOtpChange(i,e.target.value)} onKeyDown={e=>handleOtpKey(i,e)}
+                  style={{width:'48px',height:'60px',textAlign:'center',fontSize:'26px',fontWeight:'700',border:'2px solid',borderColor:v?'#3D7A55':'var(--cr3)',borderRadius:'14px',background:'var(--wh)',fontFamily:'Outfit,sans-serif',color:'var(--ink)'}}/>
+              ))}
+            </div>
+            <button className="btn bp bw" style={{borderRadius:'14px'}} onClick={handleContinue} disabled={loading}>
+              {loading ? <span className="spin"/> : (isLogin ? t.verifySignIn : t.createAccount)}
+            </button>
+            <button onClick={()=>setStep(1)} style={{width:'100%',textAlign:'center',padding:'14px',color:'var(--ink3)',fontSize:'14px',marginTop:'8px'}}>{t.backBtn}</button>
+          </div>
+        )}
+        <div className="dv"/>
+        <p style={{textAlign:'center',fontSize:'14px',color:'var(--ink3)'}}>
+          {isLogin ? t.newToTubura+' ' : t.alreadyAccount+' '}
+          <button onClick={()=>{setAuthMode(isLogin?'signup':'login');setStep(1);setOtp(['','','','','','']);}} style={{color:'var(--f1)',fontWeight:'700',fontSize:'14px'}}>
+            {isLogin ? t.createAccountLink : t.signIn}
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── HOME ───────────────────────────────────────────────────────────────────
+function Home({goTo}) {
+  const {user,cartCount,addToCart,loaded} = useApp();
+  const t = useLang();
+  const products = t._products;
+  const h = new Date().getHours();
+  const greet = h < 12 ? t.goodMorning : (h < 17 ? t.goodAfternoon : t.goodEvening);
+  const featured = products.slice(0,4);
+  return (
+    <div className="scr">
+      <div style={{background:'linear-gradient(145deg,#1C3D2A 0%,#2A5C3F 55%,#3D6B4A 100%)',padding:'52px 22px 24px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',top:'-40px',right:'-40px',width:'200px',height:'200px',borderRadius:'50%',background:'rgba(255,255,255,.04)',pointerEvents:'none'}}/>
+        <div style={{fontSize:'12px',color:'rgba(255,255,255,.5)',letterSpacing:'.06em',textTransform:'uppercase',marginBottom:'4px',fontWeight:'600'}}>{greet} 👋</div>
+        <div style={{fontFamily:'Fraunces,serif',fontSize:'26px',fontWeight:'700',color:'white',marginBottom:'2px'}}>{(user&&user.name)||'Farmer'}</div>
+        <div style={{fontSize:'12px',color:'rgba(255,255,255,.45)',marginBottom:'20px'}}>ID: {(user&&user.farmer_id)||'---'} · {(user&&user.district)||'Rwanda'}</div>
+        <div style={{display:'flex',gap:'10px'}}>
+          {[{l:t.myDistrict,v:(user&&user.district)||'---'},{l:t.cartItems,v:cartCount+' '+(cartCount!==1?(t.itemPlural||'items'):(t.itemSingle||'item'))}].map(s => (
+            <div key={s.l} style={{flex:'1',background:'rgba(255,255,255,.11)',borderRadius:'14px',padding:'12px 16px',border:'1px solid rgba(255,255,255,.12)'}}>
+              <div style={{fontSize:'10px',color:'rgba(255,255,255,.5)',fontWeight:'600',letterSpacing:'.06em',textTransform:'uppercase',marginBottom:'3px'}}>{s.l}</div>
+              <div style={{fontSize:'16px',fontWeight:'700',color:'white'}}>{s.v}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{position:'absolute',bottom:'0',left:'0',right:'0',height:'2px',background:'linear-gradient(90deg,transparent 0%,#2E7D52 30%,#4CAF78 60%,transparent 100%)'}}/>
+      </div>
+      <div style={{padding:'22px 22px 0'}}>
+        <div className="st">{t.quickActions}</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'10px'}}>
+          {[
+            {icon:'shop',label:t.shop,bg:'linear-gradient(135deg,#EBF5EE,#C8E8D0)',ic:'#1C3D2A',tab:1},
+            {icon:'pin',label:t.retailers,bg:'linear-gradient(135deg,#EBF0FB,#C8D8F2)',ic:'#1A3A7A',tab:2},
+            {icon:'orders',label:t.orders,bg:'linear-gradient(135deg,#E4F5EA,#A8DDB5)',ic:'#1C5C30',tab:3},
+            {icon:'training',label:t.training,bg:'linear-gradient(135deg,#F5EEE8,#E0C8B0)',ic:'#5A2800',tab:5},
+          ].map(q => (
+            <button key={q.label} onClick={()=>goTo(q.tab)} style={{background:q.bg,border:'none',borderRadius:'var(--r)',padding:'16px 6px',display:'flex',flexDirection:'column',alignItems:'center',gap:'9px',cursor:'pointer'}}>
+              <div style={{width:'44px',height:'44px',borderRadius:'14px',background:'rgba(255,255,255,.7)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 12px rgba(0,0,0,.08)'}}>
+                <IC n={q.icon} size={22} color={q.ic}/>
+              </div>
+              <span style={{fontSize:'10px',fontWeight:'700',color:q.ic,textAlign:'center',lineHeight:'1.2'}}>{q.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{margin:'18px 22px 0',background:'linear-gradient(135deg,#1A1208,#3D2E1E)',borderRadius:'var(--r)',padding:'14px 16px',display:'flex',alignItems:'center',gap:'14px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',top:'-30px',right:'-30px',width:'120px',height:'120px',borderRadius:'50%',background:'rgba(255,255,255,.04)',pointerEvents:'none'}}/>
+        <div style={{width:'42px',height:'42px',background:'rgba(46,125,82,.25)',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0',border:'1px solid rgba(46,125,82,.4)'}}>
+          <IC n="ussd" size={22} color="#4CAF78"/>
+        </div>
+        <div style={{flex:'1',position:'relative',zIndex:1}}>
+          <div style={{color:'white',fontSize:'14px',fontWeight:'600',marginBottom:'2px'}}>{t.noSmartphone}</div>
+          <div style={{color:'rgba(255,255,255,.4)',fontSize:'12px'}}>{t.ussdSub}</div>
+        </div>
+        <div style={{background:'linear-gradient(135deg,#2E7D52,#4CAF78)',borderRadius:'10px',padding:'8px 14px',position:'relative',zIndex:1}}>
+          <div style={{color:'white',fontSize:'15px',fontWeight:'800'}}>*689#</div>
+        </div>
+      </div>
+      <div style={{margin:'12px 22px 0',background:'linear-gradient(135deg,var(--gldp),#D4EDE0)',borderRadius:'var(--r)',padding:'14px 16px',display:'flex',gap:'12px',alignItems:'flex-start',border:'1.5px solid var(--gld3)'}}>
+        <span style={{fontSize:'20px',flexShrink:'0'}}>🌾</span>
+        <div>
+          <div style={{fontSize:'13px',fontWeight:'700',color:'var(--f1)',marginBottom:'2px'}}>{t.seasonTitle}</div>
+          <div style={{fontSize:'12px',color:'var(--ink3)',lineHeight:'1.5'}}>{t.seasonSub}</div>
+        </div>
+      </div>
+      <div style={{padding:'20px 22px 0'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:'14px'}}>
+          <div className="st" style={{marginBottom:'0'}}>{t.topProducts}</div>
+          <button onClick={()=>goTo(1)} style={{fontSize:'13px',fontWeight:'600',color:'var(--f1)'}}>{t.seeAll} →</button>
+        </div>
+        {!loaded ? (
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+            {[1,2,3,4].map(i => <div key={i} className="skel" style={{height:'190px'}}/>)}
+          </div>
+        ) : (
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+            {featured.map((p,i) => (
+              <div key={p.id} className="pc fu" style={{animationDelay:(i*.08)+'s'}} onClick={()=>goTo(1)}>
+                <div className={'pcimg '+catBg(p.category)}>
+                  <ProductImg src={p.img} fill={true}/>
+                </div>
+                <div style={{padding:'10px 12px 14px'}}>
+                  <div style={{fontSize:'12px',fontWeight:'700',color:'var(--ink)',marginBottom:'2px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.name}</div>
+                  <div style={{fontSize:'11px',color:'var(--ink4)',marginBottom:'8px',fontWeight:'500'}}>{p.category}</div>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                    <div><span style={{fontSize:'14px',fontWeight:'700',color:'var(--f1)',fontFamily:'Fraunces,serif'}}>{p.price.toLocaleString()}</span><span style={{fontSize:'10px',color:'var(--ink4)',fontWeight:'400'}}> RWF</span></div>
+                    <button onClick={e=>{e.stopPropagation();addToCart(p);}} style={{background:'var(--f1)',border:'none',borderRadius:'10px',width:'30px',height:'30px',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 3px 10px rgba(28,61,42,.28)'}}>
+                      <IC n="plus" size={14} color="white" sw={2.5}/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div style={{height:'24px'}}/>
+    </div>
+  );
+}
+
+// ── SHOP ───────────────────────────────────────────────────────────────────
+function Shop() {
+  const {addToCart,loaded} = useApp();
+  const t = useLang();
+  const products = t._products;
+  const cats     = t._cats;
+  const [cat,setCat]   = useState(cats[0]);
+  const [search,setSearch] = useState('');
+  const [sel,setSel]   = useState(null);
+  const [qty,setQty]   = useState(1);
+
+  // Reset cat to "All" equivalent when language changes (cat label changes)
+  React.useEffect(() => { setCat(cats[0]); }, [cats[0]]);
+
+  const filtered = useMemo(() => products.filter(p => {
+    const mc = cat===cats[0] || p.category===cat;
+    if (!mc) return false;
+    return !search || p.name.toLowerCase().indexOf(search.toLowerCase()) >= 0;
+  }), [products,cat,cats,search]);
+
+  const stk = s => s>50 ? [(t.inStock||'In stock'),'bgg'] : s>20 ? [(t.limited||'Limited'),'bga'] : [(t.lowStock||'Low'),'bgr'];
+  const productCountLabel = {en:'product', rw:'igicuruzwa', fr:'produit'};
+  const productCountLabelPl = {en:'products', rw:'ibicuruzwa', fr:'produits'};
+
+  return (
+    <div className="scr">
+      <div className="ph">
+        <h1>{t.shopTitle}</h1><p>{t.shopSub}</p>
+        <div className="sw" style={{marginTop:'12px'}}>
+          <div className="sico"><IC n="search" size={16} color="var(--ink4)"/></div>
+          <input placeholder={t.searchPlaceholder} value={search} onChange={e=>setSearch(e.target.value)}/>
+        </div>
+      </div>
+      <div style={{padding:'12px 22px 12px',overflowX:'auto',display:'flex',gap:'8px',borderBottom:'1px solid var(--cr3)'}}>
+        {cats.map(c => <button key={c} className={'chip'+(cat===c?' on':'')} onClick={()=>setCat(c)} style={{flexShrink:'0'}}>{c}</button>)}
+      </div>
+      <div style={{padding:'14px 22px'}}>
+        <div style={{fontSize:'12px',color:'var(--ink4)',marginBottom:'14px',fontWeight:'600'}}>{filtered.length} {filtered.length!==1?productCountLabelPl[t._lang||'en']:productCountLabel[t._lang||'en']}</div>
+        {!loaded ? (
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>{[1,2,3,4,5,6].map(i=><div key={i} className="skel" style={{height:'210px'}}/>)}</div>
+        ) : (
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+            {filtered.map((p,i) => {
+              const [stLabel,stCls] = stk(p.stock);
+              return (
+                <div key={p.id} className="pc fu" style={{animationDelay:(i*.04)+'s'}} onClick={()=>{setSel(p);setQty(1);}}>
+                  <div className={'pcimg '+catBg(p.category)}>
+                    <ProductImg src={p.img} fill={true}/>
+                  </div>
+                  <div style={{padding:'10px 12px 14px'}}>
+                    <span className={'badge '+stCls} style={{fontSize:'9px',marginBottom:'6px',display:'inline-flex',padding:'3px 8px'}}>{stLabel}</span>
+                    <div style={{fontSize:'12px',fontWeight:'700',color:'var(--ink)',marginBottom:'2px',lineHeight:'1.3'}}>{p.name}</div>
+                    <div style={{fontSize:'11px',color:'var(--ink4)',marginBottom:'8px',fontWeight:'500'}}>{p.unit}</div>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                      <div><span style={{fontSize:'14px',fontWeight:'700',color:'var(--f1)',fontFamily:'Fraunces,serif'}}>{p.price.toLocaleString()}</span><span style={{fontSize:'10px',color:'var(--ink4)',fontWeight:'400'}}> RWF</span></div>
+                      <button onClick={e=>{e.stopPropagation();addToCart(p);}} style={{background:'var(--f1)',border:'none',borderRadius:'10px',width:'30px',height:'30px',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 3px 10px rgba(28,61,42,.28)'}}>
+                        <IC n="plus" size={14} color="white" sw={2.5}/>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      {sel && (
+        <div className="mbd" onClick={()=>setSel(null)}>
+          <div className="msh" onClick={e=>e.stopPropagation()}>
+            <div className="mhd"/>
+            <div className={'pcimg '+catBg(sel.category)} style={{borderRadius:'20px',marginBottom:'20px',height:'200px'}}>
+              <ProductImg src={sel.img} fill={true} style={{borderRadius:'20px'}}/>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}}>
+              <div style={{flex:'1',paddingRight:'12px'}}>
+                <div style={{fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700',color:'var(--ink)',lineHeight:'1.15'}}>{sel.name}</div>
+                <div style={{fontSize:'13px',color:'var(--ink3)',marginTop:'3px'}}>{sel.category} · {sel.unit}</div>
+              </div>
+              <span className={'badge '+(sel.stock>50?'bgg':sel.stock>20?'bga':'bgr')}>{sel.stock} left</span>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'16px'}}>
+              {[1,2,3,4,5].map(s=><span key={s} style={{color:s<=Math.floor(sel.rating||4.5)?'#2E7D52':'var(--cr3)',fontSize:'14px'}}>★</span>)}
+              <span style={{fontSize:'12px',color:'var(--ink3)',marginLeft:'4px'}}>{sel.rating} · {(sel.sold||0).toLocaleString()} {t.sold||'sold'}</span>
+            </div>
+            <p style={{fontSize:'14px',color:'var(--ink2)',lineHeight:'1.7',marginBottom:'20px'}}>{sel.description}</p>
+            <div className="dv"/>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'18px'}}>
+              <div>
+                <div style={{fontSize:'11px',color:'var(--ink4)',fontWeight:'600',letterSpacing:'.06em',textTransform:'uppercase',marginBottom:'4px'}}>{t.pricePerUnit}</div>
+                <div style={{fontFamily:'Fraunces,serif',fontSize:'28px',fontWeight:'700',color:'var(--f1)',lineHeight:'1'}}>{sel.price.toLocaleString()} <span style={{fontSize:'14px',color:'var(--ink3)',fontFamily:'Outfit,sans-serif',fontWeight:'400'}}>RWF</span></div>
+              </div>
+              <div className="qc">
+                <button className="qb" onClick={()=>setQty(q=>Math.max(1,q-1))}>-</button>
+                <span className="qv">{qty}</span>
+                <button className="qb" onClick={()=>setQty(q=>q+1)}>+</button>
+              </div>
+            </div>
+            <div style={{background:'linear-gradient(135deg,#EBF4EE,#C8E8D0)',borderRadius:'14px',padding:'12px 18px',marginBottom:'16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{fontSize:'13px',color:'var(--f2)',fontWeight:'600'}}>{t.subtotal}</span>
+              <span style={{fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700',color:'var(--f1)'}}>{(sel.price*qty).toLocaleString()} RWF</span>
+            </div>
+            <button className="btn bp bw" style={{borderRadius:'14px'}} onClick={()=>{addToCart(sel,qty);setSel(null);setQty(1);}}>
+              {t.addToCart} ({qty}) — {(sel.price*qty).toLocaleString()} RWF
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── RETAILERS ──────────────────────────────────────────────────────────────
+function Retailers() {
+  const {showToast,retailers,loaded} = useApp();
+  const t = useLang();
+  const [locating,setLocating] = useState(false);
+  const [located,setLocated]   = useState(false);
+  const [gpsErr,setGpsErr]     = useState(false);
+  const [manual,setManual]     = useState('');
+  const [sel,setSel]           = useState(null);
+
+  const locate = () => {
+    setLocating(true); setGpsErr(false);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        () => { setLocating(false); setLocated(true); showToast('📍 '+(t.retailersFound||'Location found!')); },
+        () => { setLocating(false); setGpsErr(true); },
+        {timeout:6000}
+      );
+    } else { setLocating(false); setGpsErr(true); }
+  };
+
+  const sc = s => s==='High'?'bgg':s==='Medium'?'bga':'bgr';
+
+  return (
+    <div className="scr">
+      <div className="ph"><h1>{t.findRetailer}</h1><p>{t.findRetailerSub}</p></div>
+      <div style={{padding:'16px 22px'}}>
+        {!located ? (
+          <div className="fu">
+            <div className="mapbox" style={{height:'180px',marginBottom:'20px',background:'linear-gradient(145deg,#D4EDDA,#A8D5B5,#8BBE9E)'}}>
+              <div className="mapgrid"/>
+              <div style={{position:'relative',zIndex:'1',textAlign:'center'}}>
+                <div style={{fontSize:'44px',filter:'drop-shadow(0 6px 16px rgba(0,0,0,.2))'}} className="flt">🗺</div>
+                <div style={{fontSize:'13px',color:'var(--f1)',fontWeight:'700',marginTop:'6px'}}>{t.findNearYou}</div>
+              </div>
+            </div>
+            <button className="btn bp bw" style={{marginBottom:'12px',borderRadius:'14px'}} onClick={locate} disabled={locating}>
+              {locating ? <><span className="spin"/> {t.locating}</> : t.useGPS}
+            </button>
+            {gpsErr && <div style={{background:'var(--redl)',borderRadius:'12px',padding:'12px 16px',marginBottom:'12px',fontSize:'13px',color:'var(--red)',fontWeight:'500'}}>{t.gpsError}</div>}
+            <div style={{textAlign:'center',color:'var(--ink4)',fontSize:'12px',margin:'0 0 14px',fontWeight:'600',letterSpacing:'.06em',textTransform:'uppercase'}}>{t.orSelectManual}</div>
+            <div className="ig"><label>{t.yourDistrict}</label>
+              <select value={manual} onChange={e=>setManual(e.target.value)}>
+                <option value="">{t.selectDistrict2}</option>
+                {DISTS.map(d=><option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            <button className="btn bs bw" style={{borderRadius:'14px'}} onClick={()=>{if(!manual){showToast(t.selectDistrict2);return;}setLocated(true);showToast(t.showNearby+' - '+manual);}}>
+              {t.showNearby}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="mapbox" style={{height:'150px',marginBottom:'16px',background:'linear-gradient(145deg,#D4EDDA,#A8D5B5)'}}>
+              <div className="mapgrid"/>
+              {['1.2km','2.7km','4.1km'].map((d,i)=>(
+                <div key={i} style={{position:'absolute',background:'var(--f1)',color:'white',fontSize:'10px',fontWeight:'800',padding:'4px 8px',borderRadius:'100px',top:(22+i*24)+'%',left:(18+i*24)+'%',zIndex:'2',boxShadow:'0 3px 10px rgba(0,0,0,.25)'}}>{d}</div>
+              ))}
+              <div style={{position:'relative',zIndex:'1',textAlign:'center'}}>
+                <div style={{fontFamily:'Fraunces,serif',fontSize:'14px',fontWeight:'700',color:'var(--f1)'}}>{retailers.length} {t.retailersFound}</div>
+                <div style={{fontSize:'12px',color:'var(--f3)',marginTop:'2px'}}>{manual||'Near your location'}</div>
+              </div>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
+              <div className="st" style={{marginBottom:'0'}}>{t.nearbyRetailers}</div>
+              <button onClick={()=>setLocated(false)} style={{fontSize:'12px',color:'var(--ink3)',fontWeight:'600'}}>{t.changeLocation}</button>
+            </div>
+            {!loaded ? [1,2,3].map(i=><div key={i} className="skel" style={{height:'80px',marginBottom:'10px',borderRadius:'var(--r)'}}/>): (
+              <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+                {retailers.map((r,i) => (
+                  <div key={r.id} className="ret-card fu" style={{animationDelay:(i*.08)+'s'}} onClick={()=>setSel(r)}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',paddingLeft:'10px'}}>
+                      <div style={{flex:'1'}}>
+                        <div style={{fontWeight:'700',fontSize:'15px',color:'var(--ink)',marginBottom:'5px',fontFamily:'Fraunces,serif'}}>{r.name}</div>
+                        <div style={{display:'flex',gap:'14px',fontSize:'12px',color:'var(--ink3)',fontWeight:'500'}}>
+                          <span>📍 {r.dist}</span>
+                          <span>🏍 {r.time} {t.byMoto}</span>
+                        </div>
+                      </div>
+                      <span className={'badge '+sc(r.stock)}>{r.stock}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      {sel && (
+        <div className="mbd" onClick={()=>setSel(null)}>
+          <div className="msh" onClick={e=>e.stopPropagation()}>
+            <div className="mhd"/>
+            <div style={{background:'linear-gradient(135deg,#EBF4EE,#D4EDDA)',borderRadius:'16px',padding:'20px',marginBottom:'20px',position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:'-20px',right:'-20px',fontSize:'60px',opacity:'.1'}}>🏪</div>
+              <div style={{fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700',color:'var(--f1)',marginBottom:'8px'}}>{sel.name}</div>
+              <div style={{display:'flex',gap:'16px',fontSize:'13px',color:'var(--f2)',fontWeight:'600'}}>
+                <span>📍 {sel.dist}</span><span>🏍 {sel.time}</span>
+              </div>
+            </div>
+            <div style={{fontSize:'14px',color:'var(--ink3)',marginBottom:'20px',display:'flex',alignItems:'center',gap:'8px'}}>
+              <IC n="phone" size={16} color="var(--ink4)"/><span>{sel.phone}</span>
+            </div>
+            <button className="btn bp bw" style={{borderRadius:'14px'}} onClick={()=>{showToast(t.calling+sel.phone);setSel(null);}}>
+              {t.callRetailer}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── CART ───────────────────────────────────────────────────────────────────
+function Cart({goTo}) {
+  const {cart,cartTotal,updateQty,removeFromCart,placeOrder,showToast,retailers} = useApp();
+  const t = useLang();
+  const [view,setView]       = useState('cart');
+  const [step,setStep]       = useState(1);
+  const [delivery,setDelivery] = useState('pickup');
+  const [speed,setSpeed]     = useState('standard');
+  const [pay,setPay]         = useState('mtn_momo');
+  const [retailer,setRetailer] = useState(null);
+  const [processing,setProcessing] = useState(false);
+  const [doneOrder,setDoneOrder] = useState(null);
+  const [confirm2,setConfirm2] = useState(false);
+
+  useEffect(() => { if (retailers.length > 0 && !retailer) setRetailer(retailers[0]); }, [retailers]);
+
+  const fee = delivery==='pickup' ? 0 : speed==='express' ? 3000 : 1500;
+  const total = cartTotal + fee;
+  const PL = {mtn_momo:'MTN Mobile Money', airtel:'Airtel Money', card:'Card'};
+
+  const handlePay = async () => {
+    if (!confirm2) { setConfirm2(true); return; }
+    setProcessing(true);
+    try {
+      const o = await placeOrder({total, retailer_id:retailer?retailer.id:1, delivery_method:delivery, speed, payment_method:pay, retailer});
+      setDoneOrder(o); setView('done');
+    } catch(e) { showToast('Error: '+e.message); }
+    finally { setProcessing(false); setConfirm2(false); }
+  };
+  const reset = () => { setView('cart'); setStep(1); setConfirm2(false); setDoneOrder(null); };
+
+  if (view==='done') return (
+    <div className="scr" style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px',textAlign:'center'}}>
+      <div style={{width:'120px',height:'120px',borderRadius:'50%',background:'linear-gradient(135deg,#EBF4EE,#A8D5B5)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'24px',animation:'pop .5s ease',boxShadow:'0 12px 40px rgba(28,61,42,.2)'}}>
+        <span style={{fontSize:'56px'}}>✅</span>
+      </div>
+      <div style={{fontFamily:'Fraunces,serif',fontSize:'28px',fontWeight:'700',color:'var(--f1)',marginBottom:'8px'}}>{t.orderConfirmed}</div>
+      <div style={{fontSize:'14px',color:'var(--ink3)',marginBottom:'28px'}}>{t.receiptSent}</div>
+      <div className="card" style={{width:'100%',marginBottom:'20px'}}>
+        <div style={{height:'4px',borderRadius:'4px',background:'linear-gradient(90deg,#1C3D2A,#3D7A55,#4CAF78)',marginBottom:'16px'}}/>
+        {[[t.orderId,'#'+((doneOrder&&doneOrder.id)||'---'),'var(--f1)'],[t.totalPaid,total.toLocaleString()+' RWF','var(--ink)'],[t.payment,PL[pay],'var(--ink)'],[t.retailerLabel,(retailer&&retailer.name)||'---','var(--ink)']].map(row=>(
+          <div key={row[0]} style={{display:'flex',justifyContent:'space-between',padding:'9px 0',borderBottom:'1px solid var(--cr3)'}}>
+            <span style={{fontSize:'13px',color:'var(--ink3)',fontWeight:'500'}}>{row[0]}</span>
+            <span style={{fontWeight:'700',fontSize:'13px',color:row[2]}}>{row[1]}</span>
+          </div>
+        ))}
+      </div>
+      <button className="btn bp bw" style={{borderRadius:'14px',marginBottom:'10px'}} onClick={()=>{reset();goTo(4);}}>{t.trackOrder}</button>
+      <button className="btn bn bw" style={{borderRadius:'14px'}} onClick={()=>{reset();goTo(1);}}>{t.continueShopping}</button>
+    </div>
+  );
+
+  if (cart.length===0) return (
+    <div className="scr" style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px',textAlign:'center'}}>
+      <div style={{fontSize:'72px',marginBottom:'16px',opacity:'.2'}} className="flt">🛒</div>
+      <div style={{fontFamily:'Fraunces,serif',fontSize:'24px',fontWeight:'700',marginBottom:'8px',color:'var(--ink)'}}>{t.cartEmpty}</div>
+      <p style={{fontSize:'14px',color:'var(--ink3)',marginBottom:'24px',lineHeight:'1.6'}}>{t.cartEmptySub}</p>
+      <button className="btn bp" style={{borderRadius:'100px'}} onClick={()=>goTo(1)}>{t.browseProducts}</button>
+    </div>
+  );
+
+  if (view==='checkout') return (
+    <div className="scr">
+      <div className="ph" style={{display:'flex',alignItems:'center',gap:'12px',padding:'52px 22px 14px'}}>
+        <button onClick={()=>step===1?setView('cart'):setStep(s=>s-1)} style={{width:'40px',height:'40px',borderRadius:'50%',background:'var(--cr2)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'}}>
+          <IC n="back" size={20} color="var(--ink)"/>
+        </button>
+        <div><h1>{t.checkout}</h1><p>{t.stepOf}{step}{t.of}</p></div>
+      </div>
+      <div style={{padding:'12px 22px'}}>
+        <div className="dots">{[1,2,3].map(i=><div key={i} className={'dot'+(step>=i?' on':'')}/>)}</div>
+        {step===1 && (
+          <div className="fu">
+            <div className="st">{t.deliveryOptions}</div>
+            {[
+              {v:'pickup',sp:'',label:t.selfPickup,sub:t.selfPickupSub,fee:0,icon:'🏪'},
+              {v:'delivery',sp:'standard',label:t.standardDelivery,sub:t.standardSub,fee:1500,icon:'🏍'},
+              {v:'delivery',sp:'express',label:t.expressDelivery,sub:t.expressSub,fee:3000,icon:'⚡'},
+            ].map(o=>(
+              <div key={o.label} className={'dopt'+(delivery===o.v&&(o.v==='pickup'||speed===o.sp)?' on':'')} onClick={()=>{setDelivery(o.v);if(o.sp)setSpeed(o.sp);}}>
+                <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+                  <div style={{width:'44px',height:'44px',borderRadius:'12px',background:delivery===o.v&&(o.v==='pickup'||speed===o.sp)?'var(--f1)':'var(--cr2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'22px',transition:'background .2s'}}>{o.icon}</div>
+                  <div style={{flex:'1'}}>
+                    <div style={{fontWeight:'700',fontSize:'14px',color:'var(--ink)',marginBottom:'2px'}}>{o.label}</div>
+                    <div style={{fontSize:'12px',color:'var(--ink3)'}}>{o.sub}</div>
+                  </div>
+                  <div style={{fontWeight:'700',fontSize:'14px',color:o.fee===0?'var(--f1)':'var(--ink)'}}>{o.fee===0?t.free:o.fee.toLocaleString()+' RWF'}</div>
+                </div>
+              </div>
+            ))}
+            {delivery!=='pickup' && retailers.length>0 && (
+              <>
+                <div className="st" style={{marginTop:'16px'}}>{t.selectRetailer}</div>
+                {retailers.map(r=>(
+                  <div key={r.id} onClick={()=>setRetailer(r)} style={{border:'2px solid',borderColor:(retailer&&retailer.id===r.id)?'var(--f3)':'var(--cr3)',borderRadius:'var(--r)',padding:'12px 16px',marginBottom:'8px',cursor:'pointer',background:(retailer&&retailer.id===r.id)?'#EBF4EE':'var(--wh)',transition:'all .2s'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                      <div>
+                        <div style={{fontWeight:'700',fontSize:'14px',color:'var(--ink)',marginBottom:'2px'}}>{r.name}</div>
+                        <div style={{fontSize:'12px',color:'var(--ink3)'}}>📍 {r.dist} · 🏍 {r.time}</div>
+                      </div>
+                      {retailer&&retailer.id===r.id&&<IC n="check" size={18} color="var(--f1)" sw={2.5}/>}
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+            <button className="btn bp bw" style={{marginTop:'16px',borderRadius:'14px'}} onClick={()=>setStep(2)}>{t.continueBtn}</button>
+          </div>
+        )}
+        {step===2 && (
+          <div className="fu">
+            <div className="st">{t.paymentMethod}</div>
+            {[
+              {v:'mtn_momo',label:'MTN Mobile Money',sub:t.mtnSub,color:'#2E7D52',bg:'#EBF4EE'},
+              {v:'airtel',label:'Airtel Money',sub:t.airtelSub,color:'#B02020',bg:'#FCEAEA'},
+              {v:'card',label:'Visa / Mastercard',sub:t.cardSub,color:'#1A3A7A',bg:'#EBF0FA'},
+            ].map(pm=>(
+              <div key={pm.v} onClick={()=>setPay(pm.v)} style={{border:'2px solid',borderColor:pay===pm.v?'var(--f3)':'var(--cr3)',borderRadius:'var(--r)',padding:'14px 16px',marginBottom:'10px',cursor:'pointer',background:pay===pm.v?'#EBF4EE':'var(--wh)',transition:'all .2s'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+                  <div style={{width:'44px',height:'44px',borderRadius:'12px',background:pm.bg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0',fontSize:'18px',fontWeight:'900',color:pm.color,border:'1px solid',borderColor:pm.color+'33'}}>
+                    {pm.v==='mtn_momo'?'M':pm.v==='airtel'?'A':'💳'}
+                  </div>
+                  <div style={{flex:'1'}}>
+                    <div style={{fontWeight:'700',fontSize:'14px',color:'var(--ink)',marginBottom:'2px'}}>{pm.label}</div>
+                    <div style={{fontSize:'12px',color:'var(--ink3)'}}>{pm.sub}</div>
+                  </div>
+                  {pay===pm.v && <IC n="check" size={18} color="var(--f1)" sw={2.5}/>}
+                </div>
+              </div>
+            ))}
+            <div style={{background:'var(--gldp)',border:'1.5px solid var(--gld3)',borderRadius:'14px',padding:'14px 16px',marginTop:'8px',display:'flex',gap:'12px',alignItems:'flex-start'}}>
+              <span style={{fontSize:'18px',flexShrink:'0'}}>🔒</span>
+              <p style={{fontSize:'12px',color:'var(--ear)',lineHeight:'1.6',fontWeight:'500'}}>{t.paymentNote}</p>
+            </div>
+            <button className="btn bp bw" style={{marginTop:'16px',borderRadius:'14px'}} onClick={()=>setStep(3)}>{t.reviewOrder}</button>
+          </div>
+        )}
+        {step===3 && (
+          <div className="fu">
+            <div className="st">{t.orderSummary}</div>
+            {cart.map(item=>(
+              <div key={item.id} style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 14px',background:'var(--wh)',borderRadius:'14px',border:'1.5px solid var(--cr3)',marginBottom:'8px'}}>
+                <ProductImg src={item.img} size='48px' borderRadius='12px'/>
+                <div style={{flex:'1'}}>
+                  <div style={{fontSize:'13px',fontWeight:'700',color:'var(--ink)',marginBottom:'1px'}}>{item.name}</div>
+                  <div style={{fontSize:'12px',color:'var(--ink4)',fontWeight:'500'}}>x {item.qty}</div>
+                </div>
+                <div style={{fontWeight:'700',fontSize:'13px',color:'var(--f1)',fontFamily:'Fraunces,serif'}}>{(item.price*item.qty).toLocaleString()} RWF</div>
+              </div>
+            ))}
+            <div style={{background:'linear-gradient(135deg,#EBF4EE,#C8E8D0)',borderRadius:'var(--r)',padding:'16px 18px',margin:'8px 0 16px'}}>
+              {[[t.products,cartTotal.toLocaleString()+' RWF'],[t.delivery,fee===0?t.free:fee.toLocaleString()+' RWF'],[t.payment,PL[pay]],[delivery==='pickup'?t.pickupAt:t.retailerLabel,(retailer&&retailer.name)||'---']].map(row=>(
+                <div key={row[0]} style={{display:'flex',justifyContent:'space-between',marginBottom:'9px',fontSize:'13px'}}>
+                  <span style={{color:'var(--f2)',fontWeight:'500'}}>{row[0]}</span>
+                  <span style={{fontWeight:'600',color:'var(--ink)'}}>{row[1]}</span>
+                </div>
+              ))}
+              <div className="dv" style={{margin:'10px 0',background:'rgba(28,61,42,.15)'}}/>
+              <div style={{display:'flex',justifyContent:'space-between',fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700'}}>
+                <span style={{color:'var(--f2)'}}>{t.total}</span>
+                <span style={{color:'var(--f1)'}}>{total.toLocaleString()} RWF</span>
+              </div>
+            </div>
+            {confirm2 ? (
+              <div style={{background:'var(--redl)',border:'2px solid #FECACA',borderRadius:'16px',padding:'18px',marginBottom:'12px'}}>
+                <div style={{fontWeight:'700',color:'var(--red)',fontSize:'15px',marginBottom:'6px',fontFamily:'Fraunces,serif'}}>{t.confirmPayment}</div>
+                <p style={{fontSize:'13px',color:'var(--red)',lineHeight:'1.5',marginBottom:'14px'}}>{t.confirmPayNote}{total.toLocaleString()} RWF {t.confirmPayNote2}</p>
+                <button className="btn bp bw" style={{borderRadius:'14px',marginBottom:'8px'}} onClick={handlePay} disabled={processing}>
+                  {processing?<span className="spin"/>:t.yesConfirm}
+                </button>
+                <button className="btn bn bw" style={{borderRadius:'14px'}} onClick={()=>setConfirm2(false)}>{t.cancel}</button>
+              </div>
+            ) : (
+              <button className="btn bp bw" style={{borderRadius:'14px'}} onClick={handlePay} disabled={processing}>
+                {processing?<span className="spin"/>:(t.pay+total.toLocaleString()+' RWF')}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="scr">
+      <div className="ph"><h1>{t.cartTitle}</h1><p>{cart.length} {cart.length!==1?(t.itemPlural||'items'):(t.itemSingle||'item')} · {cartTotal.toLocaleString()} RWF</p></div>
+      <div style={{padding:'16px 22px'}}>
+        {cart.map((item,i)=>(
+          <div key={item.id} className="card fu" style={{marginBottom:'10px',animationDelay:(i*.06)+'s'}}>
+            <div style={{display:'flex',gap:'12px',alignItems:'center'}}>
+              <ProductImg src={item.img} size='56px' borderRadius='14px'/>
+              <div style={{flex:'1',minWidth:'0'}}>
+                <div style={{fontWeight:'700',fontSize:'14px',marginBottom:'2px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',color:'var(--ink)'}}>{item.name}</div>
+                <div style={{fontSize:'12px',color:'var(--ink4)',marginBottom:'8px',fontWeight:'500'}}>{item.price.toLocaleString()} RWF / {item.unit}</div>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                  <div className="qc">
+                    <button className="qb" onClick={()=>updateQty(item.id,item.qty-1)}>-</button>
+                    <span className="qv">{item.qty}</span>
+                    <button className="qb" onClick={()=>updateQty(item.id,item.qty+1)}>+</button>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                    <span style={{fontWeight:'700',color:'var(--f1)',fontFamily:'Fraunces,serif'}}>{(item.price*item.qty).toLocaleString()} RWF</span>
+                    <button onClick={()=>removeFromCart(item.id)} style={{background:'var(--redl)',border:'none',borderRadius:'10px',width:'32px',height:'32px',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                      <IC n="x" size={14} color="var(--red)" sw={2.5}/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div style={{background:'linear-gradient(135deg,#EBF4EE,#D4EDDA)',borderRadius:'var(--r)',padding:'16px 18px',margin:'16px 0'}}>
+          <div style={{display:'flex',justifyContent:'space-between',marginBottom:'4px',fontSize:'15px'}}>
+            <span style={{color:'var(--f2)',fontWeight:'600'}}>{t.subtotal}</span>
+            <span style={{fontWeight:'700',fontFamily:'Fraunces,serif',color:'var(--f1)'}}>{cartTotal.toLocaleString()} RWF</span>
+          </div>
+          <div style={{fontSize:'12px',color:'var(--f3)',fontWeight:'500'}}>{t.deliveryFeeNote}</div>
+        </div>
+        <button className="btn bp bw" style={{fontSize:'16px',borderRadius:'14px'}} onClick={()=>{setView('checkout');setStep(1);}}>{t.proceedCheckout}</button>
+        <button className="btn bn bw" style={{marginTop:'10px',borderRadius:'14px'}} onClick={()=>goTo(1)}>{t.continueShopping}</button>
+      </div>
+    </div>
+  );
+}
+
+// ── ORDERS ─────────────────────────────────────────────────────────────────
+function Orders() {
+  const {orders,showToast,setOrders} = useApp();
+  const t = useLang();
+  const [sel,setSel] = useState(null);
+  const statuses = ['confirmed','processing','shipped','delivered'];
+  const labels   = [t.confirmed||'Confirmed',t.processing||'Processing',t.shipped||'Shipped',t.delivered||'Delivered'];
+  const icons    = ['✓','📦','🏍','✅'];
+  const osCls    = s => s==='confirmed'?'bgg':s==='processing'?'bga':s==='shipped'?'bgg':s==='delivered'?'bgg':'bgr';
+
+  const cancelOrder = id => {
+    setOrders(prev => prev.map(o => o.id===id ? Object.assign({},o,{status:'cancelled'}) : o));
+    showToast(t.cancelOrder||'Order cancelled. Refund initiated.');
+    setSel(null);
+  };
+
+  if (orders.length===0) return (
+    <div className="scr" style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px',textAlign:'center'}}>
+      <div style={{fontSize:'72px',marginBottom:'16px',opacity:'.18'}} className="flt">📋</div>
+      <div style={{fontFamily:'Fraunces,serif',fontSize:'24px',fontWeight:'700',marginBottom:'8px',color:'var(--ink)'}}>{t.noOrders}</div>
+      <p style={{fontSize:'14px',color:'var(--ink3)',lineHeight:'1.6'}}>{t.noOrdersSub}</p>
+    </div>
+  );
+
+  return (
+    <div className="scr">
+      <div className="ph"><h1>{t.ordersTitle}</h1><p>{orders.length} {orders.length!==1?(t.orderPlural||'orders'):(t.orderSingle||'order')}</p></div>
+      <div style={{padding:'16px 22px',display:'flex',flexDirection:'column',gap:'12px'}}>
+        {orders.map((order,i)=>{
+          const cancelled = order.status==='cancelled';
+          return (
+            <div key={order.id} className="card fu" style={{cursor:'pointer',animationDelay:(i*.08)+'s',position:'relative',overflow:'hidden'}} onClick={()=>setSel(order)}>
+              <div style={{position:'absolute',top:'0',left:'0',right:'0',height:'3px',background:cancelled?'var(--red)':order.status==='delivered'?'linear-gradient(90deg,#1C3D2A,#3D7A55)':'var(--f3)'}}/>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'10px'}}>
+                <div>
+                  <div style={{fontFamily:'Fraunces,serif',fontWeight:'700',fontSize:'17px',color:'var(--f1)',marginBottom:'2px'}}>#{order.id}</div>
+                  <div style={{fontSize:'12px',color:'var(--ink4)',fontWeight:'500'}}>{order.date} · {order.time}</div>
+                </div>
+                <span className={'badge '+osCls(order.status)} style={{fontSize:'11px'}}>
+                  {order.status.charAt(0).toUpperCase()+order.status.slice(1)}
+                </span>
+              </div>
+              <div style={{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'10px'}}>
+                {order.items.slice(0,3).map(item=>(
+                  <span key={item.id} style={{display:'inline-flex',alignItems:'center',gap:'5px',fontSize:'11px',background:'var(--cr2)',color:'var(--ink2)',padding:'4px 10px',borderRadius:'100px',fontWeight:'600'}}>
+                    <img src={item.img} alt="" style={{width:'30px',height:'25px',objectFit:'cover',borderRadius:'8px'}}/>
+                    {item.name.split(' ')[0]} x{item.qty}
+                  </span>
+                ))}
+                {order.items.length>3 && <span style={{fontSize:'11px',background:'var(--cr3)',color:'var(--ink3)',padding:'4px 10px',borderRadius:'100px',fontWeight:'600'}}>+{order.items.length-3}</span>}
+              </div>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span style={{fontSize:'12px',color:'var(--ink3)',fontWeight:'500'}}>{order.items.length} {order.items.length!==1?(t.itemPlural||'items'):(t.itemSingle||'item')}</span>
+                <span style={{fontWeight:'700',color:'var(--f1)',fontFamily:'Fraunces,serif',fontSize:'16px'}}>{order.total.toLocaleString()} RWF</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {sel && (()=>{
+        const cancelled = sel.status==='cancelled';
+        const si = statuses.indexOf(sel.status);
+        const canCancel = !cancelled && (sel.status==='confirmed'||sel.status==='processing');
+        return (
+          <div className="mbd" onClick={()=>setSel(null)}>
+            <div className="msh" onClick={e=>e.stopPropagation()}>
+              <div className="mhd"/>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'16px'}}>
+                <div>
+                  <div style={{fontFamily:'Fraunces,serif',fontSize:'24px',fontWeight:'700',color:'var(--f1)'}}>#{sel.id}</div>
+                  <div style={{fontSize:'13px',color:'var(--ink4)',marginTop:'2px',fontWeight:'500'}}>{sel.date} · {sel.time}</div>
+                </div>
+                <span className={'badge '+osCls(sel.status)} style={{fontSize:'11px'}}>
+                  {sel.status.charAt(0).toUpperCase()+sel.status.slice(1)}
+                </span>
+              </div>
+              {!cancelled && (
+                <div className="strack">
+                  {statuses.map((s,i)=>{
+                    const done=si>=i, active=si===i;
+                    return (
+                      <React.Fragment key={s}>
+                        <div className="snode">
+                          <div className={'scirc'+(done?' done':'')+(active?' act':'')}>{icons[i]}</div>
+                          <div className={'slabel'+(done?' done':'')+(active?' act':'')}>{labels[i]}</div>
+                        </div>
+                        {i<statuses.length-1 && <div className={'sline'+(si>i?' done':'')}/>}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              )}
+              <div className="dv"/>
+              <div style={{fontWeight:'700',fontSize:'14px',marginBottom:'12px',color:'var(--ink)',fontFamily:'Fraunces,serif'}}>{t.itemsOrdered}</div>
+              {sel.items.map(item=>(
+                <div key={item.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 0',borderBottom:'1px solid var(--cr3)'}}>
+                  <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
+                    <ProductImg src={item.img} size='36px' borderRadius='8px'/>
+                    <div>
+                      <div style={{fontSize:'13px',fontWeight:'600',color:'var(--ink)'}}>{item.name}</div>
+                      <div style={{fontSize:'12px',color:'var(--ink4)',fontWeight:'500'}}>x {item.qty}</div>
+                    </div>
+                  </div>
+                  <span style={{fontWeight:'700',fontSize:'13px',color:'var(--f1)',fontFamily:'Fraunces,serif'}}>{(item.price*item.qty).toLocaleString()} RWF</span>
+                </div>
+              ))}
+              <div style={{display:'flex',justifyContent:'space-between',marginTop:'14px',padding:'14px 0',fontFamily:'Fraunces,serif',fontSize:'20px',fontWeight:'700'}}>
+                <span style={{color:'var(--ink2)'}}>{t.total}</span>
+                <span style={{color:'var(--f1)'}}>{sel.total.toLocaleString()} RWF</span>
+              </div>
+              {canCancel && (
+                <button className="btn bd bw" style={{marginTop:'8px',borderRadius:'14px'}} onClick={()=>cancelOrder(sel.id)}>{t.cancelOrder}</button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+// ── TRAINING ───────────────────────────────────────────────────────────────
+function Training() {
+  const {showToast,user,loaded} = useApp();
+  const t = useLang();
+  const trainings = t._trainings;
+  const [sel,setSel]     = useState(null);
+  const [booked,setBooked] = useState([]);
+  const [date,setDate]   = useState('');
+  const [booking,setBooking] = useState(false);
+  const today = new Date().toISOString().split('T')[0];
+  const trColors = [
+    {bg:'linear-gradient(135deg,#EBF4EE,#C8E8D0)',ic:'#1C3D2A'},
+    {bg:'linear-gradient(135deg,#EEF4EB,#C8DDB8)',ic:'#2A4A18'},
+    {bg:'linear-gradient(135deg,#F5EEE8,#E8CCAA)',ic:'#5A2800'},
+    {bg:'linear-gradient(135deg,#F5F0E8,#E0D0A8)',ic:'#4A3800'},
+    {bg:'linear-gradient(135deg,#EBF0F5,#C8D8E8)',ic:'#1A3A5A'},
+    {bg:'linear-gradient(135deg,#EBF5F0,#C8E8D8)',ic:'#1A4A30'},
+  ];
+  const handleBook = async () => {
+    if (!date) { showToast(t.selectDate); return; }
+    setBooking(true);
+    try { await api.post('/api/training-requests',{user_phone:user?user.phone:'',training_id:sel.id}).catch(()=>null); } catch(_) {}
+    setBooked(b => b.concat([sel.id]));
+    showToast(t.trainingBooked);
+    setSel(null); setDate(''); setBooking(false);
+  };
+  return (
+    <div className="scr">
+      <div className="ph"><h1>{t.trainingTitle}</h1><p>{t.trainingSub}</p></div>
+      <div style={{padding:'16px 22px'}}>
+        <div style={{background:'linear-gradient(145deg,#1C3D2A 0%,#2A5C3F 60%,#3D7A55 100%)',borderRadius:'var(--rl)',padding:'22px 22px 20px',marginBottom:'22px',color:'white',position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:'-40px',right:'-40px',width:'180px',height:'180px',borderRadius:'50%',background:'rgba(255,255,255,.06)',pointerEvents:'none'}}/>
+          <div style={{position:'absolute',bottom:'-20px',right:'20px',fontSize:'64px',opacity:'.12'}} className="flt">🌿</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,.55)',fontWeight:'700',letterSpacing:'.1em',textTransform:'uppercase',marginBottom:'6px'}}>{t.yourTrainings}</div>
+          <div style={{fontFamily:'Fraunces,serif',fontSize:'28px',fontWeight:'700',marginBottom:'4px'}}>{booked.length} {booked.length!==1?(t.sessionBooked||'sessions booked'):(t.sessionBookedSingle||'session booked')}</div>
+          <div style={{fontSize:'13px',color:'rgba(255,255,255,.5)'}}>{t.trainerConfirms}</div>
+          <div style={{marginTop:'14px',display:'flex',gap:'8px'}}>
+            <span style={{background:'rgba(46,125,82,.25)',borderRadius:'100px',padding:'5px 14px',fontSize:'12px',color:'#4CAF78',fontWeight:'600',border:'1px solid rgba(46,125,82,.3)'}}>{t.allFree}</span>
+            <span style={{background:'rgba(255,255,255,.12)',borderRadius:'100px',padding:'5px 14px',fontSize:'12px',color:'rgba(255,255,255,.7)',fontWeight:'600'}}>{t.atFarm}</span>
+          </div>
+        </div>
+        <div className="st">{t.availableTrainings}</div>
+        {!loaded ? [1,2,3].map(i=><div key={i} className="skel" style={{height:'96px',marginBottom:'10px',borderRadius:'var(--r)'}}/>):(
+          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+            {trainings.map((tr,i)=>{
+              const col = trColors[i%trColors.length];
+              const isBooked = booked.indexOf(tr.id)>=0;
+              return (
+                <div key={tr.id} className="tr-card fu" style={{opacity:tr.available?1:.5,animationDelay:(i*.07)+'s',cursor:tr.available?'pointer':'default'}} onClick={()=>tr.available&&setSel(tr)}>
+                  <div style={{width:'56px',height:'56px',borderRadius:'16px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px',flexShrink:'0',background:col.bg,boxShadow:'0 4px 12px rgba(0,0,0,.08)'}}>{tr.emoji}</div>
+                  <div style={{flex:'1'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'4px'}}>
+                      <div style={{fontFamily:'Fraunces,serif',fontWeight:'700',fontSize:'16px',color:'var(--ink)',lineHeight:'1.2'}}>{tr.title}</div>
+                      {isBooked?<span className="badge bgg" style={{fontSize:'9px',padding:'3px 8px'}}>{t.booked}</span>:!tr.available?<span className="badge bgn" style={{fontSize:'9px',padding:'3px 8px'}}>{t.full}</span>:null}
+                    </div>
+                    <p style={{fontSize:'13px',color:'var(--ink3)',lineHeight:'1.5',marginBottom:'6px'}}>{tr.desc}</p>
+                    <div style={{display:'flex',gap:'12px',fontSize:'11px',color:'var(--ink4)',fontWeight:'600'}}>
+                      <span>⏱ {tr.duration}</span><span>📍 {t.farmVisit}</span><span style={{color:'var(--f1)',fontWeight:'700'}}>{t.free}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      {sel && (
+        <div className="mbd" onClick={()=>setSel(null)}>
+          <div className="msh" onClick={e=>e.stopPropagation()}>
+            <div className="mhd"/>
+            <div style={{background:'linear-gradient(135deg,#EBF4EE,#C8E8D0)',borderRadius:'20px',padding:'28px',textAlign:'center',marginBottom:'20px',position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:'-20px',right:'-20px',fontSize:'80px',opacity:'.1'}} className="flt">🌿</div>
+              <div style={{fontSize:'64px',marginBottom:'10px',filter:'drop-shadow(0 6px 16px rgba(0,0,0,.12))'}} className="flt">{sel.emoji}</div>
+              <div style={{fontFamily:'Fraunces,serif',fontSize:'22px',fontWeight:'700',color:'var(--f1)'}}>{sel.title}</div>
+            </div>
+            <p style={{fontSize:'14px',color:'var(--ink2)',lineHeight:'1.7',marginBottom:'16px'}}>{sel.desc}</p>
+            <div style={{display:'flex',gap:'10px',marginBottom:'20px'}}>
+              {[{ic:'⏱',v:sel.duration},{ic:'📍',v:t.atFarm},{ic:'💰',v:t.free}].map(s=>(
+                <div key={s.v} style={{flex:'1',background:'var(--cr2)',borderRadius:'12px',padding:'10px 12px',textAlign:'center'}}>
+                  <div style={{fontSize:'16px',marginBottom:'3px'}}>{s.ic}</div>
+                  <div style={{fontSize:'11px',fontWeight:'700',color:'var(--ink2)'}}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+            <div className="dv"/>
+            <div className="ig"><label>{t.preferredDate}</label><input type="date" value={date} onChange={e=>setDate(e.target.value)} min={today}/></div>
+            <div style={{background:'var(--gldp)',border:'1.5px solid var(--gld3)',borderRadius:'14px',padding:'12px 16px',marginBottom:'18px'}}>
+              <p style={{fontSize:'12px',color:'var(--ear)',lineHeight:'1.6',fontWeight:'500'}}>{t.trainerWillCall}<strong>{(user&&user.phone)||'your registered phone'}</strong>{t.trainerWillCall2}</p>
+            </div>
+            <button className="btn bp bw" style={{borderRadius:'14px'}} onClick={handleBook} disabled={booking}>
+              {booking?<span className="spin"/>:t.bookSession}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── PROFILE ────────────────────────────────────────────────────────────────
+function Profile() {
+  const {user,setUser,setScreen,showToast,setLang} = useApp();
+  const t = useLang();
+  return (
+    <div className="scr">
+      <div style={{background:'linear-gradient(160deg,#1C3D2A 0%,#2A5C3F 50%,#3D6B4A 100%)',padding:'52px 22px 32px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',top:'-40px',right:'-40px',width:'180px',height:'180px',borderRadius:'50%',border:'1px solid rgba(255,255,255,.1)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:'-40px',right:'20px',fontSize:'120px',opacity:'.06'}} className="flt">🌿</div>
+        <div style={{width:'80px',height:'80px',borderRadius:'24px',background:'rgba(255,255,255,.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px',fontFamily:'Fraunces,serif',fontWeight:'700',marginBottom:'16px',border:'2px solid rgba(255,255,255,.25)',boxShadow:'0 8px 32px rgba(0,0,0,.25)',color:'white',position:'relative',zIndex:1}}>
+          {user&&user.name?user.name.charAt(0).toUpperCase():'F'}
+        </div>
+        <div style={{position:'relative',zIndex:1}}>
+          <div style={{fontFamily:'Fraunces,serif',fontSize:'26px',fontWeight:'700',color:'white',letterSpacing:'-.02em',marginBottom:'4px'}}>{(user&&user.name)||'Farmer'}</div>
+          <div style={{fontSize:'13px',color:'rgba(255,255,255,.55)',marginBottom:'2px',fontWeight:'500'}}>{(user&&user.farmer_id)||'---'}</div>
+          <div style={{fontSize:'13px',color:'rgba(255,255,255,.45)'}}>📍 {(user&&user.district)||'Rwanda'}</div>
+        </div>
+        <div style={{position:'absolute',bottom:'0',left:'0',right:'0',height:'2px',background:'linear-gradient(90deg,transparent,#2E7D52 20%,#4CAF78 60%,transparent)'}}/>
+      </div>
+      <div style={{padding:'22px'}}>
+        <div className="st">{t.profileTitle}</div>
+        <div style={{background:'var(--wh)',borderRadius:'var(--r)',marginBottom:'20px',overflow:'hidden',boxShadow:'var(--sh)'}}>
+          {[[t.phone,'📱',(user&&user.phone)||'---'],[t.district,'📍',(user&&user.district)||'---'],[t.farmerId,'🆔',(user&&user.farmer_id)||'---'],[t.crops,'🌿',(user&&user.crops&&user.crops.join(', '))||t.notRegistered]].map((row,i)=>(
+            <div key={row[0]} style={{display:'flex',alignItems:'center',gap:'14px',padding:'14px 18px',borderBottom:i<3?'1px solid var(--cr3)':'none'}}>
+              <div style={{width:'40px',height:'40px',borderRadius:'12px',background:'var(--cr2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px',flexShrink:'0'}}>{row[1]}</div>
+              <div style={{flex:'1'}}>
+                <div style={{fontSize:'10px',color:'var(--ink4)',fontWeight:'700',textTransform:'uppercase',letterSpacing:'.08em',marginBottom:'2px'}}>{row[0]}</div>
+                <div style={{fontSize:'14px',fontWeight:'600',color:'var(--ink)'}}>{row[2]}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="st">{t.settings}</div>
+        <div style={{background:'var(--wh)',borderRadius:'var(--r)',marginBottom:'20px',overflow:'hidden',boxShadow:'var(--sh)'}}>
+          {[
+            {icon:'bell',label:t.notifications,sub:t.notificationsSub,action:null},
+            {icon:'lock',label:t.changePin,sub:t.changePinSub,action:null},
+            {icon:'phone',label:t.language,sub:t.languageSub,action:()=>setScreen('lang')},
+            {icon:'ussd',label:t.ussdAccess,sub:t.ussdSub2,action:null},
+            {icon:'info',label:t.aboutTubura,sub:t.aboutSub,action:null},
+          ].map((s,i)=>(
+            <div key={s.label} onClick={()=>s.action?s.action():showToast(t.comingSoon)} style={{display:'flex',alignItems:'center',gap:'14px',padding:'14px 18px',borderBottom:i<4?'1px solid var(--cr3)':'none',cursor:'pointer'}}>
+              <div style={{width:'40px',height:'40px',borderRadius:'12px',background:'linear-gradient(135deg,#EBF4EE,#C8E8D0)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'}}>
+                <IC n={s.icon} size={18} color="var(--f1)"/>
+              </div>
+              <div style={{flex:'1'}}>
+                <div style={{fontSize:'14px',fontWeight:'600',color:'var(--ink)',marginBottom:'1px'}}>{s.label}</div>
+                <div style={{fontSize:'12px',color:'var(--ink4)',fontWeight:'400'}}>{s.sub}</div>
+              </div>
+              <IC n="arrow" size={16} color="var(--ink5)"/>
+            </div>
+          ))}
+        </div>
+        <div style={{background:'linear-gradient(135deg,#1C3D2A,#2A5C3F)',borderRadius:'var(--r)',padding:'18px 20px',marginBottom:'20px',textAlign:'center',position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:'-30px',right:'-30px',fontSize:'80px',opacity:'.08'}} className="flt">🌱</div>
+          <div style={{fontSize:'28px',marginBottom:'6px',position:'relative',zIndex:1}}>🌱</div>
+          <div style={{fontSize:'14px',fontWeight:'700',color:'white',marginBottom:'2px',position:'relative',zIndex:1,fontFamily:'Fraunces,serif'}}>Powered by One Acre Fund</div>
+          <div style={{fontSize:'12px',color:'rgba(255,255,255,.4)',position:'relative',zIndex:1}}>Tubura v1.0 · Rwanda 2026</div>
+        </div>
+        <button className="btn bd bw" style={{borderRadius:'14px'}} onClick={()=>{setUser(null);setScreen('auth');}}>{t.signOut}</button>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN ───────────────────────────────────────────────────────────────────
+function Main() {
+  const {cartCount} = useApp();
+  const t = useLang();
+  const [tab,setTab] = useState(0);
+  const tabs = [
+    {icon:'home',  label:t.home||'Home',     comp:<Home goTo={setTab}/>},
+    {icon:'shop',  label:t.shop||'Shop',    comp:<Shop/>},
+    {icon:'pin',   label:t.retailers||'Retailers', comp:<Retailers/>},
+    {icon:'cart',  label:t.cartItems||'Cart', comp:<Cart goTo={setTab}/>},
+    {icon:'orders',label:t.orders||'Orders',comp:<Orders/>},
+    {icon:'training',label:t.training||'Training',comp:<Training/>},
+    {icon:'profile',label:t.profile||'Profile', comp:<Profile/>},
+  ];
+  const nav = [0,1,2,3,4,6];
+  return (
+    <>
+      <div style={{flex:'1',overflow:'auto',position:'relative',display:'flex',flexDirection:'column'}}>{tabs[tab].comp}</div>
+      <div className="bnav">
+        {nav.map(i=>{
+          const item=tabs[i], isCart=item.icon==='cart', on=tab===i;
+          return (
+            <button key={i} className={'ni'+(on?' on':'')} onClick={()=>setTab(i)}>
+              <div className="ni-pip"/>
+              <div style={{position:'relative',marginTop:'2px'}}>
+                <IC n={item.icon} size={22} color={on?'#4CAF78':'rgba(255,255,255,.35)'} sw={on?2:1.6}/>
+                {isCart && cartCount>0 && <div className="cbadge">{cartCount>9?'9+':cartCount}</div>}
+              </div>
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// ── TOAST + APP ────────────────────────────────────────────────────────────
+function Toast() {
+  const {toast} = useApp();
+  if (!toast) return null;
+  return <div className="toast">{toast}</div>;
+}
+
+function App() {
+  const {screen} = useApp();
+  return (
+    <div className="shell">
+      {screen==='lang'    && <LangPicker/>}
+      {screen==='splash'  && <Splash/>}
+      {screen==='auth'    && <Auth/>}
+      {screen==='main'    && <Main/>}
+      <Toast/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <AppProvider><App/></AppProvider>
+);
+</script>
+</body>
+</html>
