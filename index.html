@@ -1833,7 +1833,7 @@ function Auth() {
             <IC n="back" size={18} color="white"/>
           </button>
         )}
-        <div style={{marginBottom:'14px'}}><IC n={isLogin?'leaf':'sprout'} size={36} color="white"/></div>
+        <div style={{marginBottom:'14px'}}><IC n={isLogin? 'none' : 'none'} size={36} color= 'none'/></div>
         <div style={{fontFamily:'Fraunces,serif',fontSize:'28px',fontWeight:'700',color:'white',letterSpacing:'-.02em',marginBottom:'6px'}}>{isLogin ? t.welcomeBack : t.joinTubura}</div>
         <div style={{fontSize:'14px',color:'rgba(255,255,255,.62)',fontWeight:'300'}}>{isLogin ? t.signInSub : t.createSub}</div>
         <div style={{position:'absolute',bottom:'0',left:'26px',width:'48px',height:'3px',background:'linear-gradient(90deg,#4CAF78,#E3B341)',borderRadius:'2px'}}/>
