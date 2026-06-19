@@ -2055,6 +2055,60 @@ function Auth() {
 }
 
 // ── HOME ───────────────────────────────────────────────────────────────────
+// ── ANNOUNCEMENT CAROUSEL ──────────────────────────────────────────────────
+const CAROUSEL_IMGS = ['screen1.png','screen2.png','screen3.png'];
+
+function AnnouncementCarousel() {
+  const [cur, setCur] = React.useState(0);
+  const touchStartX = React.useRef(null);
+  const timerRef = React.useRef(null);
+
+  const resetTimer = React.useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => setCur(c => (c+1) % CAROUSEL_IMGS.length), 5000);
+  }, []);
+
+  React.useEffect(() => {
+    resetTimer();
+    return () => clearInterval(timerRef.current);
+  }, [resetTimer]);
+
+  const goTo = (i) => { setCur(i); resetTimer(); };
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) {
+      const next = dx < 0
+        ? (cur + 1) % CAROUSEL_IMGS.length
+        : (cur - 1 + CAROUSEL_IMGS.length) % CAROUSEL_IMGS.length;
+      goTo(next);
+    }
+    touchStartX.current = null;
+  };
+
+  return (
+    <div style={{margin:'16px 22px 0',borderRadius:'var(--r)',overflow:'hidden',position:'relative',userSelect:'none'}}
+      onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div style={{display:'flex',transition:'transform .4s cubic-bezier(.22,1,.36,1)',transform:`translateX(-${cur*100}%)`}}>
+        {CAROUSEL_IMGS.map((src,i) => (
+          <img key={i} src={src} alt={`Announcement ${i+1}`}
+            style={{width:'100%',flexShrink:'0',display:'block',aspectRatio:'16/7',objectFit:'cover',borderRadius:'var(--r)'}}
+            draggable={false}/>
+        ))}
+      </div>
+      <div style={{display:'flex',justifyContent:'center',gap:'6px',marginTop:'10px',paddingBottom:'2px'}}>
+        {CAROUSEL_IMGS.map((_,i) => (
+          <button key={i} onClick={()=>goTo(i)}
+            style={{width: i===cur ? '22px' : '6px',height:'6px',borderRadius:'3px',
+              background: i===cur ? 'var(--f3)' : 'var(--cr3)',
+              border:'none',padding:'0',transition:'all .3s cubic-bezier(.34,1.56,.64,1)',cursor:'pointer'}}/>
+        ))}
+      </div>
+    </div>
+  );
+}
 function Home({goTo}) {
   const {user,cartCount,addToCart,loaded,unreadCount} = useApp();
   const t = useLang();
@@ -2095,33 +2149,7 @@ function Home({goTo}) {
         </div>
         <div style={{position:'absolute',bottom:'0',left:'0',right:'0',height:'2px',background:'linear-gradient(90deg,transparent 0%,#2E7D52 30%,#E3B341 60%,transparent 100%)'}}/>
       </div>
-      <div style={{padding:'22px 22px 0'}}>
-        <div className="st">{t.quickActions}</div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'10px'}}>
-          {[
-            {icon:'shop',label:t.shop,ic:'#4CAF78',tab:1},
-            {icon:'pin',label:t.retailers,ic:'#6FA8E0',tab:2},
-            {icon:'orders',label:t.orders,ic:'#7DD9A4',tab:4},
-            {icon:'training',label:t.training,ic:'#E3B341',tab:5},
-          ].map(q => (
-            <button key={q.label} onClick={()=>goTo(q.tab)} style={{background:'var(--wh)',border:'1px solid var(--cr3)',borderRadius:'var(--r)',padding:'16px 6px',display:'flex',flexDirection:'column',alignItems:'center',gap:'9px',cursor:'pointer'}}>
-              <div style={{width:'44px',height:'44px',borderRadius:'14px',background:'rgba(255,255,255,.05)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <IC n={q.icon} size={22} color={q.ic}/>
-              </div>
-              <span style={{fontSize:'10px',fontWeight:'700',color:'var(--ink2)',textAlign:'center',lineHeight:'1.2'}}>{q.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      <div style={{margin:'12px 22px 0',background:'linear-gradient(135deg,var(--gldp),rgba(227,179,65,.05))',borderRadius:'var(--r)',padding:'14px 16px',display:'flex',gap:'12px',alignItems:'flex-start',border:'1.5px solid var(--gld3)'}}>
-        <div style={{width:'32px',height:'32px',borderRadius:'10px',background:'rgba(227,179,65,.18)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'}}>
-          <IC n="sprout" size={18} color="var(--gld2)"/>
-        </div>
-        <div>
-          <div style={{fontSize:'13px',fontWeight:'700',color:'var(--gld2)',marginBottom:'2px'}}>{t.seasonTitle}</div>
-          <div style={{fontSize:'12px',color:'var(--ink3)',lineHeight:'1.5'}}>{t.seasonSub}</div>
-        </div>
-      </div>
+<AnnouncementCarousel/>
       <div style={{padding:'20px 22px 0'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:'14px'}}>
           <div className="st" style={{marginBottom:'0'}}>{t.topProducts}</div>
